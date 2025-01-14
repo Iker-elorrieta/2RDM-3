@@ -19,19 +19,19 @@ public class menu extends JPanel {
 		setLayout(null);
 		
 		btnConsultarHorario = new JButton("Ver horario");
-		btnConsultarHorario.setBounds(163, 65, 128, 23);
+		btnConsultarHorario.setBounds(167, 134, 140, 23);
 		add(btnConsultarHorario);
 		
 		btnOtrosHorarios = new JButton("Ver otros horarios");
-		btnOtrosHorarios.setBounds(163, 121, 128, 23);
+		btnOtrosHorarios.setBounds(167, 190, 140, 23);
 		add(btnOtrosHorarios);
 		
 		btnReuniones = new JButton("Ver reuniones");
-		btnReuniones.setBounds(163, 186, 128, 23);
+		btnReuniones.setBounds(167, 255, 140, 23);
 		add(btnReuniones);
 		
 		btnDesconectar = new JButton("Desconectar");
-		btnDesconectar.setBounds(325, 11, 115, 23);
+		btnDesconectar.setBounds(360, 11, 115, 23);
 		add(btnDesconectar);
 
 	}

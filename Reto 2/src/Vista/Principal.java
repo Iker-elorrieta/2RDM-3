@@ -1,6 +1,7 @@
 package Vista;
 
 import Controlador.Controlador;
+import Controlador.Servidor;
 
 public class Principal {
 
@@ -12,6 +13,7 @@ public class Principal {
 			ventanaPrincipal.setVisible(true);
 
 			// Creamos en controlador con acceso al modelo y la vista
+			new Servidor();
 			new Controlador(ventanaPrincipal);
 
 		} catch (Exception e) {
