@@ -13,8 +13,10 @@ import javax.swing.JOptionPane;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import Modelo.Ciclos;
 import Modelo.HibernateUtil;
 import Modelo.Users;
 import Vista.VentanasR2;
@@ -22,7 +24,7 @@ import Vista.VentanasR2;
 public class Servidor {
 
 	static Session ses = HibernateUtil.getSessionFactory().openSession();
-	Transaction tr = ses.beginTransaction();
+	static Transaction tr;
 	private static DataOutputStream out;
 	static String txtNombre;
 	static String txtContra;
@@ -32,11 +34,10 @@ public class Servidor {
 			ServerSocket serv = new ServerSocket(4000);
 			Socket cli = serv.accept();
 			DataInputStream recivido = new DataInputStream(cli.getInputStream());
-			out=new DataOutputStream(cli.getOutputStream());
+			out = new DataOutputStream(cli.getOutputStream());
 			txtNombre = recivido.readUTF();
 			txtContra = recivido.readUTF();
 			login();
-			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -60,9 +61,10 @@ public class Servidor {
 					List<?> comprobar = q2.list();
 					for (int o = 0; o < comprobar.size(); o++) {
 						if (conCorrecta.equals(con)) {
-							//enviar objeto profe
+							// enviar objeto profe
 							// profeActual=temp;
 							out.writeBoolean(true);
+							guardado();
 							return true;
 						}
 						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
@@ -78,6 +80,20 @@ public class Servidor {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private static void guardado() {
+		try {
+			tr = ses.beginTransaction();
+			Ciclos nuevo = new Ciclos();
+			nuevo.setId(6);
+			nuevo.setNombre("CICLO");
+			ses.save(nuevo);
+			tr.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public static String Resumir(String frase) throws NoSuchAlgorithmException {

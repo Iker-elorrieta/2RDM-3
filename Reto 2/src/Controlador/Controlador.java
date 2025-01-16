@@ -76,6 +76,7 @@ public class Controlador implements ActionListener {
 			desconectar();
 			break;
 		case VER_HORARIO:
+			mostrarHorario();
 			this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.VER_HORARIO);
 			break;
 		case OTROS_HORARIOS:
@@ -89,36 +90,14 @@ public class Controlador implements ActionListener {
 	}
 
 	
+	private void mostrarHorario() {
+		
+	}
+
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
-		//cambiar a if para return true o false
 		if(cli.login(usuario,contra)) {
 			return true;
 		}
-		/*
-		String con = Resumir(contra);
-		String qry = "from Users where tipo_id=" + tipo;
-		Query q = ses.createQuery(qry);
-		List<?> profesores = q.list();
-		for (int i = 0; i < profesores.size(); i++) {
-			Users temp = (Users) profesores.get(i);
-			//
-			String conCorrecta = Resumir(temp.getPassword());
-			if (temp.getUsername().equals(usuario)) {
-				String qry2 = "from Users where username='" + temp.getUsername() + "'";
-				Query q2 = ses.createQuery(qry2);
-				List<?> comprobar = q2.list();
-				for (int o = 0; o < comprobar.size(); o++) {
-					if (conCorrecta.equals(con)) {
-						profeActual=temp;
-						return true;
-					}
-					JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
-				}
-				return false;
-			}
-		}
-		JOptionPane.showMessageDialog(null, "Usuario incorrecto.");
-		*/
 		return false;
 	}
 

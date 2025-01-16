@@ -34,7 +34,6 @@ public class Cliente {
 			out.writeUTF(con);
 			boolean result=in.readBoolean();
 			return result;
-			//recibir true o false
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
