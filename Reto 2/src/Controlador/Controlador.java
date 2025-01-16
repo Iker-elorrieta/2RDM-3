@@ -16,6 +16,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import Conexion.Cliente;
 import Vista.VentanasR2;
 import Modelo.HibernateUtil;
 import Modelo.Tipos;
@@ -28,12 +29,10 @@ public class Controlador implements ActionListener {
 	Transaction tr = ses.beginTransaction();
 	private int tipo = -1;
 	private Users profeActual;
-	private DataOutputStream out;
-
+	private Cliente cli=new Cliente();
+	
 	public Controlador(VentanasR2 ventanaPrincipal) throws UnknownHostException, IOException {
 		this.vista = ventanaPrincipal;
-		Socket cli = new Socket("localhost", 4000);
-		out=new DataOutputStream(cli.getOutputStream());
 		this.inicializarControlador();
 		String qry = "from Tipos where name='profesor'";
 		Query q = ses.createQuery(qry);
@@ -47,7 +46,7 @@ public class Controlador implements ActionListener {
 	private void inicializarControlador() {
 		this.vista.getPanelLogin().getBtnLogin().addActionListener(this);
 		this.vista.getPanelLogin().getBtnLogin().setActionCommand(VentanasR2.enumAcciones.BTN_LOGIN.toString());
-		
+	
 		this.vista.getPanelMenu().getBtnDesconectar().addActionListener(this);
 		this.vista.getPanelMenu().getBtnDesconectar().setActionCommand(VentanasR2.enumAcciones.DESCONECTAR.toString());
 		this.vista.getPanelMenu().getBtnConsultarHorario().addActionListener(this);
@@ -62,7 +61,6 @@ public class Controlador implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		VentanasR2.enumAcciones accion = VentanasR2.enumAcciones.valueOf(e.getActionCommand());
-
 		switch (accion) {
 		case BTN_LOGIN:
 			try {
@@ -92,17 +90,20 @@ public class Controlador implements ActionListener {
 
 	
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
+		//cambiar a if para return true o false
+		if(cli.login(usuario,contra)) {
+			return true;
+		}
+		/*
 		String con = Resumir(contra);
 		String qry = "from Users where tipo_id=" + tipo;
 		Query q = ses.createQuery(qry);
 		List<?> profesores = q.list();
 		for (int i = 0; i < profesores.size(); i++) {
 			Users temp = (Users) profesores.get(i);
+			//
 			String conCorrecta = Resumir(temp.getPassword());
 			if (temp.getUsername().equals(usuario)) {
-				out.writeUTF(VentanasR2.enumAcciones.BTN_LOGIN.toString());
-				out.writeUTF(contra);
-				out.writeUTF(conCorrecta);
 				String qry2 = "from Users where username='" + temp.getUsername() + "'";
 				Query q2 = ses.createQuery(qry2);
 				List<?> comprobar = q2.list();
@@ -117,11 +118,13 @@ public class Controlador implements ActionListener {
 			}
 		}
 		JOptionPane.showMessageDialog(null, "Usuario incorrecto.");
+		*/
 		return false;
 	}
 
 	private void desconectar() {
 		this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.CARGAR_LOGIN);
+		
 	}
 	public String Resumir(String frase) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("SHA");
