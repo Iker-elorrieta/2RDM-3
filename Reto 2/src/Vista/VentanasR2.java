@@ -25,14 +25,36 @@ public class VentanasR2 extends JFrame{
 	private JPanel panelContenedor;
 	private login panelLogin;
 	private menu panelMenu;
+	private verHorario panelHorario;
+	private verOtrosHorarios panelOtrosHorarios;
+	private verReuniones panelReuniones;
 	
 	public VentanasR2() {
 		mCrearPanelContenedor();
 		mCrearPanelMenu();
+		mCrearPanelHorario();
+		mCrearPanelOtrosHorarios();
+		mCrearPanelReuniones();
 		mCrearPanelLogin();
 	}
 	
 	
+
+	private void mCrearPanelReuniones() {
+		panelReuniones=new verReuniones();
+		panelContenedor.add(panelReuniones);
+	}
+
+	private void mCrearPanelOtrosHorarios() {
+		panelOtrosHorarios=new verOtrosHorarios();
+		panelContenedor.add(panelOtrosHorarios);
+		
+	}
+
+	private void mCrearPanelHorario() {
+		panelHorario=new verHorario();
+		panelContenedor.add(panelHorario);	
+	}
 
 	private void mCrearPanelContenedor() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,6 +79,9 @@ public class VentanasR2 extends JFrame{
 	public void mVisualizarPaneles(enumAcciones panel) {
 		panelLogin.setVisible(false);
 		panelMenu.setVisible(false);
+		panelHorario.setVisible(false);
+		panelOtrosHorarios.setVisible(false);
+		panelReuniones.setVisible(false);
 		
 		switch (panel) {
 		case CARGAR_LOGIN:
@@ -64,6 +89,16 @@ public class VentanasR2 extends JFrame{
 			break;
 		case CARGAR_MENU:
 			panelMenu.setVisible(true);
+			break;
+		case VER_HORARIO:
+			panelHorario.setVisible(true);
+			break;
+		case OTROS_HORARIOS:
+			panelOtrosHorarios.setVisible(true);
+			break;
+		case REUNIONES:
+			panelReuniones.setVisible(true);
+			break;
 		default:
 		}
 	}
@@ -77,4 +112,15 @@ public class VentanasR2 extends JFrame{
 		return panelMenu;
 	}
 	
+	public verHorario getPanelHorario() {
+		return panelHorario;
+	}
+	
+	public verOtrosHorarios getPanelOtrosHorarios() {
+		return panelOtrosHorarios;
+	}
+	
+	public verReuniones getPanelReuniones() {
+		return panelReuniones;
+	}
 }

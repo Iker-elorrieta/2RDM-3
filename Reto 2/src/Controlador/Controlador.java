@@ -11,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -28,7 +29,6 @@ public class Controlador implements ActionListener {
 	Session ses = HibernateUtil.getSessionFactory().openSession();
 	Transaction tr = ses.beginTransaction();
 	private int tipo = -1;
-	private Users profeActual;
 	private Cliente cli=new Cliente();
 	
 	public Controlador(VentanasR2 ventanaPrincipal) throws UnknownHostException, IOException {
@@ -44,9 +44,10 @@ public class Controlador implements ActionListener {
 	}
 
 	private void inicializarControlador() {
+		//login
 		this.vista.getPanelLogin().getBtnLogin().addActionListener(this);
 		this.vista.getPanelLogin().getBtnLogin().setActionCommand(VentanasR2.enumAcciones.BTN_LOGIN.toString());
-	
+		//menu
 		this.vista.getPanelMenu().getBtnDesconectar().addActionListener(this);
 		this.vista.getPanelMenu().getBtnDesconectar().setActionCommand(VentanasR2.enumAcciones.DESCONECTAR.toString());
 		this.vista.getPanelMenu().getBtnConsultarHorario().addActionListener(this);
@@ -55,6 +56,12 @@ public class Controlador implements ActionListener {
 		this.vista.getPanelMenu().getBtnOtrosHorarios().setActionCommand(VentanasR2.enumAcciones.OTROS_HORARIOS.toString());
 		this.vista.getPanelMenu().getBtnReuniones().addActionListener(this);
 		this.vista.getPanelMenu().getBtnReuniones().setActionCommand(VentanasR2.enumAcciones.REUNIONES.toString());
+		//panel horario
+		this.vista.getPanelHorario().getBtnVolver().addActionListener(this);
+		this.vista.getPanelHorario().getBtnVolver().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
+		//panel otros horarios
+		
+		//panel reuniones
 		
 	}
 
@@ -79,6 +86,9 @@ public class Controlador implements ActionListener {
 			mostrarHorario();
 			this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.VER_HORARIO);
 			break;
+		case CARGAR_MENU:
+			this.vista.mVisualizarPaneles(accion);
+			break;
 		case OTROS_HORARIOS:
 			this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.OTROS_HORARIOS);
 			break;
@@ -91,7 +101,8 @@ public class Controlador implements ActionListener {
 
 	
 	private void mostrarHorario() {
-		
+		DefaultTableModel modelo=cli.getHorario();
+		vista.getPanelHorario().getTabla().setModel(modelo);
 	}
 
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {

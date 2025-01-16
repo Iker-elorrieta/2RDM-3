@@ -1,8 +1,6 @@
 package Vista;
 
-import Conexion.Cliente;
 import Controlador.Controlador;
-import Controlador.Servidor;
 
 public class Principal {
 

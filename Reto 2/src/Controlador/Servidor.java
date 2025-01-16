@@ -3,6 +3,7 @@ package Controlador;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.MessageDigest;
@@ -10,39 +11,108 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import Modelo.Ciclos;
 import Modelo.HibernateUtil;
+import Modelo.Horarios;
+import Modelo.HorariosId;
+import Modelo.Modulos;
 import Modelo.Users;
-import Vista.VentanasR2;
 
 public class Servidor {
 
 	static Session ses = HibernateUtil.getSessionFactory().openSession();
 	static Transaction tr;
-	private static DataOutputStream out;
+	static DataOutputStream out;
+		static ObjectOutputStream objout;
 	static String txtNombre;
 	static String txtContra;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) {	
+		
 		try {
 			ServerSocket serv = new ServerSocket(4000);
-			Socket cli = serv.accept();
-			DataInputStream recivido = new DataInputStream(cli.getInputStream());
-			out = new DataOutputStream(cli.getOutputStream());
-			txtNombre = recivido.readUTF();
-			txtContra = recivido.readUTF();
-			login();
+			while (!serv.isClosed()) {
+				Socket cli = serv.accept();
+				DataInputStream recivido = new DataInputStream(cli.getInputStream());
+				objout=new ObjectOutputStream(cli.getOutputStream());
+				out = new DataOutputStream(cli.getOutputStream());
+				while (cli.isConnected()) {
+					int accion = -1;
+					try {
+						accion = recivido.readInt();
+					} catch (Exception e) {
+					}
+					switch (accion) {
+					case 0: //login
+						txtNombre = recivido.readUTF();
+						txtContra = recivido.readUTF();
+						login();
+						break;
+					case 1: //ver horario
+						int idprof=recivido.readInt();
+						verHorario(idprof);
+						break;
+					default:
+					}
+				}
+
+			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static void verHorario(int idprof) {
+		String qry="from Horarios where profe_id="+idprof;
+		Query q = ses.createQuery(qry);
+		List<?> horario = q.list();
+		String columnas[] = { "Lunes","Martes","Miércoles","Jueves","Viernes"};
+		DefaultTableModel modelo=new DefaultTableModel(columnas,5);
+		for (int i = 0; i < horario.size(); i++) {
+			Horarios temp=(Horarios) horario.get(i);
+			HorariosId h=temp.getId();
+			int dia=horarioDia(h);
+			int hora=Integer.valueOf(h.getHora())-1;
+			String modulo=horarioModulo(h.getModuloId());
+			modelo.setValueAt(modulo, hora, dia);
+		}
+		try {
+			objout.writeObject(modelo);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String horarioModulo(int moduloId) {
+		String qry="from Modulos where id="+moduloId;
+		Query q = ses.createQuery(qry);
+		List<?> modulo = q.list();
+		Modulos temp=(Modulos) modulo.get(0);
+		return temp.getNombre();
+	}
+
+	private static int horarioDia(HorariosId h) {
+		switch(h.getDia()) {
+		case "L/A":
+			return 0;
+		case "M/A":
+			return 1;
+		case "X":
+			return 2;
+		case "J/O":
+			return 3;
+		case "V/O":
+			return 4;
+		default:
+		}
+		return 0;
 	}
 
 	private static boolean login() {
@@ -61,10 +131,9 @@ public class Servidor {
 					List<?> comprobar = q2.list();
 					for (int o = 0; o < comprobar.size(); o++) {
 						if (conCorrecta.equals(con)) {
-							// enviar objeto profe
-							// profeActual=temp;
+							objout.writeObject(temp);
 							out.writeBoolean(true);
-							guardado();
+							//guardado();
 							return true;
 						}
 						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
