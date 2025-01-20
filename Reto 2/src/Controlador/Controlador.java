@@ -2,45 +2,32 @@ package Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
-import javax.swing.JOptionPane;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import Conexion.Cliente;
 import Vista.VentanasR2;
 import Modelo.HibernateUtil;
-import Modelo.Tipos;
-import Modelo.Users;
 
-public class Controlador implements ActionListener {
+public class Controlador implements ActionListener{
 
 	private VentanasR2 vista;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
 	Transaction tr = ses.beginTransaction();
-	private int tipo = -1;
 	private Cliente cli=new Cliente();
 	
 	public Controlador(VentanasR2 ventanaPrincipal) throws UnknownHostException, IOException {
 		this.vista = ventanaPrincipal;
 		this.inicializarControlador();
-		String qry = "from Tipos where name='profesor'";
-		Query q = ses.createQuery(qry);
-		List<?> tipoQ = q.list();
-		for (int i = 0; i < tipoQ.size(); i++) {
-			Tipos temp = (Tipos) tipoQ.get(i);
-			tipo = temp.getId();
-		}
 	}
 
 	private void inicializarControlador() {
@@ -60,11 +47,14 @@ public class Controlador implements ActionListener {
 		this.vista.getPanelHorario().getBtnVolver().addActionListener(this);
 		this.vista.getPanelHorario().getBtnVolver().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
 		//panel otros horarios
+		this.vista.getPanelOtrosHorarios().getBtnAtras().addActionListener(this);
+		this.vista.getPanelOtrosHorarios().getBtnAtras().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
 		
+		this.vista.getPanelOtrosHorarios().getComboProfes().addActionListener(this);
+		this.vista.getPanelOtrosHorarios().getComboProfes().setActionCommand(VentanasR2.enumAcciones.SELECCIONAR_PROFE.toString());
 		//panel reuniones
 		
 	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		VentanasR2.enumAcciones accion = VentanasR2.enumAcciones.valueOf(e.getActionCommand());
@@ -91,15 +81,30 @@ public class Controlador implements ActionListener {
 			break;
 		case OTROS_HORARIOS:
 			this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.OTROS_HORARIOS);
+			llenarComboProfes();
 			break;
 		case REUNIONES:
 			this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.REUNIONES);
+			break;
+		case SELECCIONAR_PROFE:
+			selectProfe();
 			break;
 		default:
 		}
 	}
 
 	
+	@SuppressWarnings("unchecked")
+	private void llenarComboProfes() {
+		DefaultComboBoxModel<?> modelo=cli.llenarComboProfes();
+		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
+	}
+
+	private void selectProfe() {
+		DefaultTableModel modelo=cli.getOtroHorario(vista.getPanelOtrosHorarios().getComboProfes().getSelectedItem().toString());
+		vista.getPanelOtrosHorarios().getTabla().setModel(modelo);
+	}
+
 	private void mostrarHorario() {
 		DefaultTableModel modelo=cli.getHorario();
 		vista.getPanelHorario().getTabla().setModel(modelo);

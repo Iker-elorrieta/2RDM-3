@@ -19,6 +19,7 @@ public class VentanasR2 extends JFrame{
 		DESCONECTAR,
 		VER_HORARIO,
 		OTROS_HORARIOS,
+		SELECCIONAR_PROFE,
 		REUNIONES
 	}
 	
