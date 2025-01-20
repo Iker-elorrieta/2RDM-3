@@ -116,7 +116,7 @@ public class Controlador implements ActionListener {
 	}
 
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
-		if (cli.login(usuario, contra)) {
+		if (cli.login(Resumir(usuario), Resumir(contra))) {
 			return true;
 		}
 		return false;

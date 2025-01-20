@@ -164,7 +164,6 @@ public class Servidor {
 
 	private static boolean login() {
 		try {
-			String con = Resumir(txtContra);
 			String qry = "from Users where tipo_id=3";
 			Query q = ses.createQuery(qry);
 			List<?> profesores = q.list();
@@ -172,12 +171,12 @@ public class Servidor {
 				Users temp = (Users) profesores.get(i);
 				String conCorrecta;
 				conCorrecta = Resumir(temp.getPassword());
-				if (temp.getUsername().equals(txtNombre)) {
+				if (Resumir(temp.getUsername()).equals(txtNombre)) {
 					String qry2 = "from Users where username='" + temp.getUsername() + "'";
 					Query q2 = ses.createQuery(qry2);
 					List<?> comprobar = q2.list();
 					for (int o = 0; o < comprobar.size(); o++) {
-						if (conCorrecta.equals(con)) {
+						if (conCorrecta.equals(txtContra)) {
 							out.writeBoolean(true);
 							out.writeObject(temp);
 							out.flush();
