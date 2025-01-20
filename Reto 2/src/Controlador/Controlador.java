@@ -14,57 +14,62 @@ import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import Conexion.Cliente;
 import Vista.VentanasR2;
+import Modelo.Cliente;
 import Modelo.HibernateUtil;
 
-public class Controlador implements ActionListener{
+public class Controlador implements ActionListener {
 
 	private VentanasR2 vista;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
 	Transaction tr = ses.beginTransaction();
-	private Cliente cli=new Cliente();
-	
+	private Cliente cli = new Cliente();
+
 	public Controlador(VentanasR2 ventanaPrincipal) throws UnknownHostException, IOException {
 		this.vista = ventanaPrincipal;
 		this.inicializarControlador();
 	}
 
 	private void inicializarControlador() {
-		//login
+		// login
 		this.vista.getPanelLogin().getBtnLogin().addActionListener(this);
 		this.vista.getPanelLogin().getBtnLogin().setActionCommand(VentanasR2.enumAcciones.BTN_LOGIN.toString());
-		//menu
+		// menu
 		this.vista.getPanelMenu().getBtnDesconectar().addActionListener(this);
 		this.vista.getPanelMenu().getBtnDesconectar().setActionCommand(VentanasR2.enumAcciones.DESCONECTAR.toString());
 		this.vista.getPanelMenu().getBtnConsultarHorario().addActionListener(this);
-		this.vista.getPanelMenu().getBtnConsultarHorario().setActionCommand(VentanasR2.enumAcciones.VER_HORARIO.toString());
+		this.vista.getPanelMenu().getBtnConsultarHorario()
+				.setActionCommand(VentanasR2.enumAcciones.VER_HORARIO.toString());
 		this.vista.getPanelMenu().getBtnOtrosHorarios().addActionListener(this);
-		this.vista.getPanelMenu().getBtnOtrosHorarios().setActionCommand(VentanasR2.enumAcciones.OTROS_HORARIOS.toString());
+		this.vista.getPanelMenu().getBtnOtrosHorarios()
+				.setActionCommand(VentanasR2.enumAcciones.OTROS_HORARIOS.toString());
 		this.vista.getPanelMenu().getBtnReuniones().addActionListener(this);
 		this.vista.getPanelMenu().getBtnReuniones().setActionCommand(VentanasR2.enumAcciones.REUNIONES.toString());
-		//panel horario
+		// panel horario
 		this.vista.getPanelHorario().getBtnVolver().addActionListener(this);
 		this.vista.getPanelHorario().getBtnVolver().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
-		//panel otros horarios
+		// panel otros horarios
 		this.vista.getPanelOtrosHorarios().getBtnAtras().addActionListener(this);
-		this.vista.getPanelOtrosHorarios().getBtnAtras().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
-		
+		this.vista.getPanelOtrosHorarios().getBtnAtras()
+				.setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
+
 		this.vista.getPanelOtrosHorarios().getComboProfes().addActionListener(this);
-		this.vista.getPanelOtrosHorarios().getComboProfes().setActionCommand(VentanasR2.enumAcciones.SELECCIONAR_PROFE.toString());
-		//panel reuniones
-		
+		this.vista.getPanelOtrosHorarios().getComboProfes()
+				.setActionCommand(VentanasR2.enumAcciones.SELECCIONAR_PROFE.toString());
+		// panel reuniones
+
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		VentanasR2.enumAcciones accion = VentanasR2.enumAcciones.valueOf(e.getActionCommand());
 		switch (accion) {
 		case BTN_LOGIN:
 			try {
-				if(loginComprobar(this.vista.getPanelLogin().getUser().getText(),
-						String.valueOf(this.vista.getPanelLogin().getContra().getPassword()))) {
+				boolean resultado = loginComprobar(this.vista.getPanelLogin().getUser().getText(),
+						String.valueOf(this.vista.getPanelLogin().getContra().getPassword()));
+				if (resultado)
 					vista.mVisualizarPaneles(VentanasR2.enumAcciones.CARGAR_MENU);
-				}
 			} catch (NoSuchAlgorithmException | IOException e1) {
 				e1.printStackTrace();
 			}
@@ -93,34 +98,35 @@ public class Controlador implements ActionListener{
 		}
 	}
 
-
 	@SuppressWarnings("unchecked")
 	private void llenarComboProfes() {
-		DefaultComboBoxModel<?> modelo=cli.llenarComboProfes();
+		DefaultComboBoxModel<?> modelo = cli.llenarComboProfes();
 		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
 	}
 
 	private void selectProfe() {
-		DefaultTableModel modelo=cli.getOtroHorario(vista.getPanelOtrosHorarios().getComboProfes().getSelectedItem().toString());
+		DefaultTableModel modelo = cli
+				.getOtroHorario(vista.getPanelOtrosHorarios().getComboProfes().getSelectedItem().toString());
 		vista.getPanelOtrosHorarios().getTabla().setModel(modelo);
 	}
 
 	private void mostrarHorario() {
-		DefaultTableModel modelo=cli.getHorario();
+		DefaultTableModel modelo = cli.getHorario();
 		vista.getPanelHorario().getTabla().setModel(modelo);
 	}
 
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
-		if(cli.login(usuario,contra)) {
+		if (cli.login(usuario, contra)) {
 			return true;
 		}
 		return false;
+
 	}
 
 	private void desconectar() {
 		this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.CARGAR_LOGIN);
-		
 	}
+
 	public String Resumir(String frase) throws NoSuchAlgorithmException {
 		MessageDigest md = MessageDigest.getInstance("SHA");
 		byte bytes[] = frase.getBytes();

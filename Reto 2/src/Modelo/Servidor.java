@@ -1,7 +1,7 @@
-package Controlador;
+package Modelo;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,18 +18,12 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import Modelo.Ciclos;
-import Modelo.HibernateUtil;
-import Modelo.Horarios;
-import Modelo.HorariosId;
-import Modelo.Modulos;
-import Modelo.Users;
-
 public class Servidor {
 
 	static Session ses = HibernateUtil.getSessionFactory().openSession();
 	static Transaction tr;
 	static ObjectOutputStream out;
+	static ObjectInputStream recivido;
 	static String txtNombre;
 	static String txtContra;
 
@@ -40,8 +34,8 @@ public class Servidor {
 			ServerSocket serv = new ServerSocket(4000);
 			while (!serv.isClosed()) {
 				Socket cli = serv.accept();
-				DataInputStream recivido = new DataInputStream(cli.getInputStream());
 				out = new ObjectOutputStream(cli.getOutputStream());
+				recivido = new ObjectInputStream(cli.getInputStream());
 				while (cli.isConnected()) {
 					int accion = -1;
 					try {
@@ -55,14 +49,14 @@ public class Servidor {
 						login();
 						break;
 					case 1: // ver horario
-						int idprof = recivido.readInt();
-						verHorario(idprof);
+						Users idprof = (Users) recivido.readObject();
+						verHorario(idprof.getId());
 						break;
-					case 2: //ver otro horario
-						String nomprof=recivido.readUTF();
+					case 2: // ver otro horario
+						String nomprof = recivido.readUTF();
 						verOtroHorario(nomprof);
 						break;
-					case 21://llenar combo profes
+					case 21:// llenar combo profes
 						llenarCombo();
 						break;
 					default:
@@ -73,31 +67,34 @@ public class Servidor {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void llenarCombo() throws IOException {
-		String qry="from Users where tipo_id=3";
+		String qry = "from Users where tipo_id=3";
 		Query q = ses.createQuery(qry);
 		List<?> profesores = q.list();
 		ArrayList<String> listaprofes = new ArrayList<String>();
 		DefaultComboBoxModel<?> modelo;
 		for (int i = 0; i < profesores.size(); i++) {
 			Users actual = (Users) profesores.get(i);
-			listaprofes.add(actual.getNombre() + " "+actual.getApellidos());
+			listaprofes.add(actual.getNombre() + " " + actual.getApellidos());
 		}
-		modelo=new DefaultComboBoxModel(listaprofes.toArray());
+		modelo = new DefaultComboBoxModel(listaprofes.toArray());
 		out.writeObject(modelo);
+		out.flush();
 	}
 
 	private static void verOtroHorario(String nomprof) {
-		String nom=nomprof.split(" ")[0];
-		String profeq="from Users where nombre='"+nom+"'";
+		String nom = nomprof.split(" ")[0];
+		String profeq = "from Users where nombre='" + nom + "'";
 		Query q1 = ses.createQuery(profeq);
 		List<?> profenom = q1.list();
-		Users profeSelec=(Users)profenom.get(0);
-		String qry = "from Horarios where profe_id=" + profeSelec.getId() ;
+		Users profeSelec = (Users) profenom.get(0);
+		String qry = "from Horarios where profe_id=" + profeSelec.getId();
 		Query q = ses.createQuery(qry);
 		List<?> horario = q.list();
 		String columnas[] = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" };
@@ -112,6 +109,7 @@ public class Servidor {
 		}
 		try {
 			out.writeObject(modelo);
+			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -133,6 +131,7 @@ public class Servidor {
 		}
 		try {
 			out.writeObject(modelo);
+			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -181,17 +180,21 @@ public class Servidor {
 						if (conCorrecta.equals(con)) {
 							out.writeBoolean(true);
 							out.writeObject(temp);
+							out.flush();
 							// guardado();
 							return true;
 						}
 						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
 					}
+
 					out.writeBoolean(false);
+					out.flush();
 					return false;
 				}
 			}
 			JOptionPane.showMessageDialog(null, "Usuario incorrecto.");
 			out.writeBoolean(false);
+			out.flush();
 			return false;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
