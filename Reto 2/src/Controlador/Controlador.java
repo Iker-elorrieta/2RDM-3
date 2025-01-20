@@ -93,7 +93,7 @@ public class Controlador implements ActionListener{
 		}
 	}
 
-	
+
 	@SuppressWarnings("unchecked")
 	private void llenarComboProfes() {
 		DefaultComboBoxModel<?> modelo=cli.llenarComboProfes();
