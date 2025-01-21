@@ -20,7 +20,9 @@ public class VentanasR2 extends JFrame{
 		VER_HORARIO,
 		OTROS_HORARIOS,
 		SELECCIONAR_PROFE,
-		REUNIONES
+		REUNIONES,
+		ACEPTAR_REUNION,
+		RECHAZAR_REUNION
 	}
 	
 	private JPanel panelContenedor;
@@ -59,7 +61,7 @@ public class VentanasR2 extends JFrame{
 
 	private void mCrearPanelContenedor() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(250, 150, 500, 400);
+		setBounds(250, 150, 500, 410);
 		panelContenedor = new JPanel();
 		panelContenedor.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelContenedor);

@@ -24,7 +24,7 @@ public class verOtrosHorarios extends JPanel {
 		setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(24, 89, 448, 266);
+		scrollPane.setBounds(10, 94, 462, 266);
 		add(scrollPane);
 		
 		String columnas[] = { "Lunes","Martes","Miércoles","Jueves","Viernes"};
@@ -41,7 +41,7 @@ public class verOtrosHorarios extends JPanel {
 		add(btnAtras);
 		
 		comboProfes = new JComboBox<String>();
-		comboProfes.setBounds(24, 40, 172, 22);
+		comboProfes.setBounds(10, 46, 150, 22);
 		add(comboProfes);
 	}
 

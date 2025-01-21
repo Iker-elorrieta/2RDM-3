@@ -57,7 +57,10 @@ public class Controlador implements ActionListener {
 		this.vista.getPanelOtrosHorarios().getComboProfes()
 				.setActionCommand(VentanasR2.enumAcciones.SELECCIONAR_PROFE.toString());
 		// panel reuniones
-
+		this.vista.getPanelReuniones().getBtnAtras().addActionListener(this);
+		this.vista.getPanelReuniones().getBtnAtras().setActionCommand(VentanasR2.enumAcciones.CARGAR_MENU.toString());
+		
+		//botones rechazar/aceptar
 	}
 
 	@Override
@@ -124,6 +127,8 @@ public class Controlador implements ActionListener {
 	}
 
 	private void desconectar() {
+		this.vista.getPanelLogin().getUser().setText(null);
+		this.vista.getPanelLogin().getContra().setText(null);
 		this.vista.mVisualizarPaneles(VentanasR2.enumAcciones.CARGAR_LOGIN);
 	}
 
