@@ -6,6 +6,10 @@ package Modelo;
  */
 public class Matriculaciones implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private MatriculacionesId id;
 	private Ciclos ciclos;
 	private Users users;

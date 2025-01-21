@@ -6,6 +6,10 @@ package Modelo;
  */
 public class Horarios implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HorariosId id;
 	private Users users;
 	private Modulos modulos;
