@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -117,7 +118,7 @@ public class HiloServidor extends Thread {
 			String alumno=actual.getUsersByAlumnoId().getNombre()+" "+actual.getUsersByAlumnoId().getApellidos();
 			
 			
-			modelo.addRow(new Object[] {estado,titulo,asunto,String.valueOf(fecha),aula,centro,alumno,"Aceptar","Rechazar"});
+			modelo.addRow(new Object[] {estado,titulo,asunto,String.valueOf(fecha),aula,centro,alumno,new JButton("Aceptar"),new JButton("Rechazar")});
 		}
 		try {
 			out.writeObject(modelo);

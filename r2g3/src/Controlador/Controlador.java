@@ -1,7 +1,10 @@
 package Controlador;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +13,10 @@ import java.util.Map;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -22,7 +28,7 @@ import Modelo.Cliente;
 import Modelo.HiloServidor;
 import Vista.Ventanas;
 
-public class Controlador implements ActionListener{
+public class Controlador implements ActionListener,MouseListener, TableCellRenderer{
 
 	private Ventanas vista;
 	static boolean get = false;
@@ -67,8 +73,11 @@ public class Controlador implements ActionListener{
 		this.vista.getPanelReuniones().getBtnAtras().addActionListener(this);
 		this.vista.getPanelReuniones().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
 
+		this.vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellRenderer(this);
+		this.vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellRenderer(this);
 		// botones rechazar/aceptar
-		this.vista.getPanelReuniones().getTablaPendientes().getColumnClass(7);
+		this.vista.getPanelReuniones().getTablaPendientes().addMouseListener(this);
+		
 	}
 
 	@Override
@@ -106,6 +115,9 @@ public class Controlador implements ActionListener{
 		case SELECCIONAR_PROFE:
 			selectProfe();
 			break;
+		case ACEPTAR_REUNION:
+			System.out.println("funciona listener");
+			break;
 		default:
 		}
 	}
@@ -116,9 +128,8 @@ public class Controlador implements ActionListener{
 		
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
-
-		//vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellRenderer(this);
-		//vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellRenderer(this);
+		
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -213,6 +224,61 @@ public class Controlador implements ActionListener{
 			// System.out.println("Es nulo");
 		}
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		JTable table=this.vista.getPanelReuniones().getTablaPendientes();
+		int column = table.getColumnModel().getColumnIndexAtX(e.getX());
+		int row    = e.getY()/table.getRowHeight();
+		 if (row < table.getRowCount() && row >= 0  && column < table.getColumnCount() && column >= 0)  {
+             Object value = table.getValueAt(row, column);
+             if (value instanceof JButton) {
+                 //perform a click event
+            	 JButton boton=(JButton) value;
+            	 boton.addActionListener(this);
+            	 if(boton.getText().equals("Aceptar")) {
+            		 ((JButton) value).setActionCommand(Ventanas.enumAcciones.ACEPTAR_REUNION.toString());
+            	 }else {
+            		 ((JButton) value).setActionCommand(Ventanas.enumAcciones.RECHAZAR_REUNION.toString());
+            	 }
+                 
+             }
+         }
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		JButton button = (JButton)value;
+        return button;
+	}
+
+	
 
 	
 

@@ -4,16 +4,19 @@ import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.EventObject;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-public class verReuniones extends JPanel {
+public class verReuniones extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnAtras;
@@ -73,11 +76,22 @@ public class verReuniones extends JPanel {
 		add(scrollPendientes);
 		
 		tablaPendientes = new JTable(modeloP);
+		tablaPendientes.setDefaultRenderer(JButton.class, new TableCellRenderer() {
+			private TableCellRenderer defaultRenderer=tablaPendientes.getDefaultRenderer(JButton.class);
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				if(value instanceof Component)
+			         return (Component)value;
+			         return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			}});
 		tablaPendientes.setEnabled(false);
 		tablaPendientes.setRowSelectionAllowed(false);
 		tablaPendientes.setAutoCreateRowSorter(true);
 		tablaPendientes.setColumnSelectionAllowed(false);
 		scrollPendientes.setViewportView(tablaPendientes);
+		
+		
 		
 		lblPendientes = new JLabel("Reuniones pendientes");
 		lblPendientes.setHorizontalAlignment(SwingConstants.CENTER);
