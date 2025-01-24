@@ -1,12 +1,17 @@
 package Vista;
 
 import javax.swing.JPanel;
+
+import java.awt.Color;
+import java.awt.Component;
+
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class verReuniones extends JPanel {
 
@@ -40,7 +45,27 @@ public class verReuniones extends JPanel {
 		scrollReuniones.setBounds(10, 45, 462, 181);
 		add(scrollReuniones);
 		
-		tablaReuniones = new JTable(modeloR);
+		tablaReuniones = new JTable(modeloR) {
+			private static final long serialVersionUID = 1L;
+
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component c = super.prepareRenderer(renderer, row, column);
+				int modelRow = convertRowIndexToModel(row);
+				
+				if(getModel().getValueAt(modelRow,0).toString().equals("aceptada")) {
+					c.setBackground(Color.GREEN);
+				}else if(getModel().getValueAt(modelRow,0).toString().equals("denegada")) {
+					c.setBackground(Color.RED);
+				}else if(getModel().getValueAt(modelRow,0).toString().equals("conflicto")) {
+					c.setBackground(Color.YELLOW);
+				}
+				return c;
+			}
+		};
+		tablaReuniones.setEnabled(false);
+		tablaReuniones.setRowSelectionAllowed(false);
+		tablaReuniones.setAutoCreateRowSorter(true);
+		tablaReuniones.setColumnSelectionAllowed(false);
 		scrollReuniones.setViewportView(tablaReuniones);
 		
 		scrollPendientes = new JScrollPane();
@@ -48,6 +73,10 @@ public class verReuniones extends JPanel {
 		add(scrollPendientes);
 		
 		tablaPendientes = new JTable(modeloP);
+		tablaPendientes.setEnabled(false);
+		tablaPendientes.setRowSelectionAllowed(false);
+		tablaPendientes.setAutoCreateRowSorter(true);
+		tablaPendientes.setColumnSelectionAllowed(false);
 		scrollPendientes.setViewportView(tablaPendientes);
 		
 		lblPendientes = new JLabel("Reuniones pendientes");

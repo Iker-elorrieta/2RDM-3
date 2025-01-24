@@ -5,23 +5,39 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
+import Modelo.Centro;
 import Modelo.Cliente;
+import Modelo.HiloServidor;
 import Vista.Ventanas;
 
 public class Controlador implements ActionListener{
 
 	private Ventanas vista;
-	
-	public Controlador(Ventanas ventanaPrincipal) {
-		vista=ventanaPrincipal;
+	static boolean get = false;
+	static int dato = -1;
+	static String nombre;
+	static String id;
+	static String dir;
+	Cliente metodos;
+
+	public Controlador(Ventanas ventanaPrincipal, Cliente cliente) {
+		vista = ventanaPrincipal;
 		this.inicializarControlador();
+		metodos=cliente;
 	}
-	
+
 	private void inicializarControlador() {
 		// login
 		this.vista.getPanelLogin().getBtnLogin().addActionListener(this);
@@ -42,8 +58,7 @@ public class Controlador implements ActionListener{
 		this.vista.getPanelHorario().getBtnVolver().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
 		// panel otros horarios
 		this.vista.getPanelOtrosHorarios().getBtnAtras().addActionListener(this);
-		this.vista.getPanelOtrosHorarios().getBtnAtras()
-				.setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
+		this.vista.getPanelOtrosHorarios().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
 
 		this.vista.getPanelOtrosHorarios().getComboProfes().addActionListener(this);
 		this.vista.getPanelOtrosHorarios().getComboProfes()
@@ -51,10 +66,11 @@ public class Controlador implements ActionListener{
 		// panel reuniones
 		this.vista.getPanelReuniones().getBtnAtras().addActionListener(this);
 		this.vista.getPanelReuniones().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
-		
-		//botones rechazar/aceptar
+
+		// botones rechazar/aceptar
+		this.vista.getPanelReuniones().getTablaPendientes().getColumnClass(7);
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Ventanas.enumAcciones accion = Ventanas.enumAcciones.valueOf(e.getActionCommand());
@@ -84,6 +100,7 @@ public class Controlador implements ActionListener{
 			llenarComboProfes();
 			break;
 		case REUNIONES:
+			mostrarReuniones();
 			this.vista.mVisualizarPaneles(Ventanas.enumAcciones.REUNIONES);
 			break;
 		case SELECCIONAR_PROFE:
@@ -92,31 +109,40 @@ public class Controlador implements ActionListener{
 		default:
 		}
 	}
-	
-	
+
+	private void mostrarReuniones() {
+		DefaultTableModel modelo = metodos.getReuniones();
+		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
+		
+		DefaultTableModel pendientes = metodos.getPendientes();
+		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
+
+		//vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellRenderer(this);
+		//vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellRenderer(this);
+	}
+
 	@SuppressWarnings("unchecked")
 	private void llenarComboProfes() {
-		DefaultComboBoxModel<?> modelo = Cliente.llenarComboProfes();
+		DefaultComboBoxModel<?> modelo = metodos.llenarComboProfes();
 		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
 	}
 
 	private void selectProfe() {
-		DefaultTableModel modelo = Cliente
+		DefaultTableModel modelo = metodos
 				.getOtroHorario(vista.getPanelOtrosHorarios().getComboProfes().getSelectedItem().toString());
 		vista.getPanelOtrosHorarios().getTabla().setModel(modelo);
 	}
 
 	private void mostrarHorario() {
-		DefaultTableModel modelo = Cliente.getHorario();
+		DefaultTableModel modelo = metodos.getHorario();
 		vista.getPanelHorario().getTabla().setModel(modelo);
 	}
 
 	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
-		if (Cliente.login(Resumir(usuario), Resumir(contra))) {
+		if (metodos.login(Resumir(usuario), Resumir(contra))) {
 			return true;
 		}
 		return false;
-
 	}
 
 	private void desconectar() {
@@ -134,4 +160,61 @@ public class Controlador implements ActionListener{
 		return resumenString;
 	}
 
-}
+	public static void parserDatos(JsonElement datos) {
+		if (datos.isJsonArray()) {
+			JsonArray array = datos.getAsJsonArray();
+			Iterator<JsonElement> iter = array.iterator();
+			while (iter.hasNext()) {
+				JsonElement entrada = iter.next();
+				parserDatos(entrada);
+			}
+			
+		} else if (datos.isJsonObject()) {
+			JsonObject objeto = datos.getAsJsonObject();
+			Iterator<Map.Entry<String, JsonElement>> iter2 = objeto.entrySet().iterator();
+			while (iter2.hasNext()) {
+				Map.Entry<String, JsonElement> ent = iter2.next();
+				JsonElement valor = ent.getValue();
+				if (ent.getKey().equals("CCEN")) {
+					get = true;
+					dato = 1;
+				} else if (ent.getKey().equals("NOM")) {
+					get = true;
+					dato = 2;
+				} else if (ent.getKey().equals("DOMI")) {
+					get = true;
+					dato = 3;
+				}
+				// System.out.println("Atributo: " + ent.getKey());
+				parserDatos(valor);
+			}
+		} else if (datos.isJsonPrimitive()) {
+			JsonPrimitive primi = datos.getAsJsonPrimitive();
+			if (primi.isString()) {
+				if (get) {
+					if (dato == 2) {
+						nombre = primi.getAsString();
+					} else if (dato == 3) {
+						dir = primi.getAsString();	
+						HiloServidor.lista.add(new Centro(id,nombre,dir));
+					}
+					get = false;
+				}
+				// System.out.println("\tTexto: " + primi.getAsString());
+			} else if (primi.isNumber()) {
+				if (dato == 1) {
+					id = String.valueOf(primi.getAsNumber());
+				}
+				// System.out.println("\tNumero: " + primi.getAsNumber());
+			} else if (primi.isBoolean()) {
+				// System.out.println("\tTexto: " + primi.getAsBoolean());
+			}
+		} else if (datos.isJsonNull()) {
+			// System.out.println("Es nulo");
+		}
+	}
+
+	
+
+		
+	}

@@ -12,29 +12,26 @@ import Controlador.Controlador;
 import Vista.Ventanas;
 
 public class Cliente {
-	static ObjectOutputStream out;
-	static ObjectInputStream in;
-	static Users profe;
+	ObjectOutputStream out;
+	ObjectInputStream in;
+	Users profe;
+	Socket cli;
 
-	public static void main(String[] args) {
+	public Cliente() {
 		try {
-			@SuppressWarnings("resource")
-			Socket cli = new Socket("localhost", 4000);
+			cli = new Socket("localhost", 4000);
 			out = new ObjectOutputStream(cli.getOutputStream());
 			in = new ObjectInputStream(cli.getInputStream());
 			
-			
 			Ventanas ventanaPrincipal = new Ventanas();
 			ventanaPrincipal.setVisible(true);
-			new Controlador(ventanaPrincipal);
-						
+			new Controlador(ventanaPrincipal, this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	public static boolean login(String user, String con) {
+
+	public boolean login(String user, String con) {
 		try {
 			out.writeInt(0);
 			out.writeUTF(user);
@@ -53,8 +50,8 @@ public class Cliente {
 		return false;
 
 	}
-	
-	public static DefaultTableModel getHorario() {
+
+	public DefaultTableModel getHorario() {
 		try {
 			out.writeInt(1);
 			out.writeObject(profe);
@@ -69,7 +66,7 @@ public class Cliente {
 		return null;
 	}
 
-	public static DefaultTableModel getOtroHorario(String nombre) {
+	public DefaultTableModel getOtroHorario(String nombre) {
 		try {
 			out.writeInt(2);
 			out.writeUTF(nombre);
@@ -84,11 +81,41 @@ public class Cliente {
 		return null;
 	}
 
-	public static DefaultComboBoxModel<?> llenarComboProfes() {
+	public DefaultComboBoxModel<?> llenarComboProfes() {
 		try {
 			out.writeInt(21);
 			out.flush();
 			DefaultComboBoxModel<?> modelo = (DefaultComboBoxModel<?>) in.readObject();
+			return modelo;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public DefaultTableModel getReuniones() {
+		try {
+			out.writeInt(3);
+			out.writeObject(profe);
+			out.flush();
+			DefaultTableModel modelo = (DefaultTableModel) in.readObject();
+			return modelo;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public DefaultTableModel getPendientes() {
+		try {
+			out.writeInt(31);
+			out.writeObject(profe);
+			out.flush();
+			DefaultTableModel modelo = (DefaultTableModel) in.readObject();
 			return modelo;
 		} catch (IOException e) {
 			e.printStackTrace();
