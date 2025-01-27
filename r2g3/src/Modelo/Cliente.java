@@ -22,7 +22,7 @@ public class Cliente {
 			cli = new Socket("localhost", 4000);
 			out = new ObjectOutputStream(cli.getOutputStream());
 			in = new ObjectInputStream(cli.getInputStream());
-			
+
 			Ventanas ventanaPrincipal = new Ventanas();
 			ventanaPrincipal.setVisible(true);
 			new Controlador(ventanaPrincipal, this);

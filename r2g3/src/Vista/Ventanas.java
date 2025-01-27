@@ -60,7 +60,7 @@ public class Ventanas extends JFrame{
 
 	private void mCrearPanelContenedor() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(250, 150, 500, 410);
+		setBounds(300, 150, 900, 700);
 		panelContenedor = new JPanel();
 		panelContenedor.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelContenedor);

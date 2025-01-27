@@ -20,11 +20,11 @@ public class verOtrosHorarios extends JPanel {
 	 * Create the panel.
 	 */
 	public verOtrosHorarios() {
-		setBounds(0, 0, 500, 400);
+		setBounds(0, 0, 900, 700);
 		setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 94, 462, 266);
+		scrollPane.setBounds(10, 202, 866, 266);
 		add(scrollPane);
 		
 		String columnas[] = { "Lunes","Martes","Miércoles","Jueves","Viernes"};
@@ -37,11 +37,11 @@ public class verOtrosHorarios extends JPanel {
 		scrollPane.setViewportView(tabla);
 		
 		btnAtras = new JButton("Volver");
-		btnAtras.setBounds(383, 11, 89, 23);
+		btnAtras.setBounds(771, 11, 88, 23);
 		add(btnAtras);
 		
 		comboProfes = new JComboBox<String>();
-		comboProfes.setBounds(10, 46, 150, 22);
+		comboProfes.setBounds(10, 146, 187, 22);
 		add(comboProfes);
 	}
 

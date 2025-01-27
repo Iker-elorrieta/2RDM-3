@@ -16,14 +16,14 @@ public class verHorario extends JPanel {
 	 * Create the panel.
 	 */
 	public verHorario() {
-		setBounds(0, 0, 490, 400);
+		setBounds(0, 0, 900, 700);
 		setLayout(null);
 		
 		String columnas[] = { "Lunes","Martes","Miércoles","Jueves","Viernes"};
 		modelo=new DefaultTableModel(columnas,0);
 		
 		btnVolver = new JButton("Volver");
-		btnVolver.setBounds(383, 11, 89, 23);
+		btnVolver.setBounds(774, 11, 89, 23);
 		add(btnVolver);
 		
 		tabla = new JTable(modelo);
@@ -33,7 +33,7 @@ public class verHorario extends JPanel {
 		tabla.setEnabled(false);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 83, 460, 232);
+		scrollPane.setBounds(10, 189, 853, 286);
 		add(scrollPane);
 		scrollPane.setViewportView(tabla);
 		

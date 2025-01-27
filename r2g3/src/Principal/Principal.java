@@ -1,4 +1,4 @@
-package Vista;
+package Principal;
 
 import Modelo.Cliente;
 

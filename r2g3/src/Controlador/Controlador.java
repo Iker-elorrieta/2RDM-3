@@ -23,7 +23,7 @@ import Modelo.Cliente;
 import Modelo.HiloServidor;
 import Vista.Ventanas;
 
-public class Controlador implements ActionListener{
+public class Controlador implements ActionListener {
 
 	private Ventanas vista;
 	static boolean get = false;
@@ -36,7 +36,7 @@ public class Controlador implements ActionListener{
 	public Controlador(Ventanas ventanaPrincipal, Cliente cliente) {
 		vista = ventanaPrincipal;
 		this.inicializarControlador();
-		metodos=cliente;
+		metodos = cliente;
 	}
 
 	private void inicializarControlador() {
@@ -67,7 +67,7 @@ public class Controlador implements ActionListener{
 		// panel reuniones
 		this.vista.getPanelReuniones().getBtnAtras().addActionListener(this);
 		this.vista.getPanelReuniones().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
-		
+
 	}
 
 	@Override
@@ -128,17 +128,20 @@ public class Controlador implements ActionListener{
 	private void mostrarReuniones() {
 		DefaultTableModel modelo = metodos.getReuniones();
 		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
-		
+
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
-		
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellRenderer(new ButtonEditor("Aceptar",this));
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellEditor(new ButtonEditor("Aceptar",this));
-		
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellRenderer(new ButtonEditor("Rechazar",this));
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellEditor(new ButtonEditor("Rechazar",this));	
-		
-		
+
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
+				.setCellRenderer(new ButtonEditor("Aceptar", this));
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
+				.setCellEditor(new ButtonEditor("Aceptar", this));
+
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
+				.setCellRenderer(new ButtonEditor("Rechazar", this));
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
+				.setCellEditor(new ButtonEditor("Rechazar", this));
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -188,7 +191,7 @@ public class Controlador implements ActionListener{
 				JsonElement entrada = iter.next();
 				parserDatos(entrada);
 			}
-			
+
 		} else if (datos.isJsonObject()) {
 			JsonObject objeto = datos.getAsJsonObject();
 			Iterator<Map.Entry<String, JsonElement>> iter2 = objeto.entrySet().iterator();
@@ -205,7 +208,6 @@ public class Controlador implements ActionListener{
 					get = true;
 					dato = 3;
 				}
-				// System.out.println("Atributo: " + ent.getKey());
 				parserDatos(valor);
 			}
 		} else if (datos.isJsonPrimitive()) {
@@ -215,26 +217,19 @@ public class Controlador implements ActionListener{
 					if (dato == 2) {
 						nombre = primi.getAsString();
 					} else if (dato == 3) {
-						dir = primi.getAsString();	
-						HiloServidor.lista.add(new Centro(id,nombre,dir));
+						dir = primi.getAsString();
+						HiloServidor.lista.add(new Centro(id, nombre, dir));
 					}
 					get = false;
 				}
-				// System.out.println("\tTexto: " + primi.getAsString());
 			} else if (primi.isNumber()) {
 				if (dato == 1) {
 					id = String.valueOf(primi.getAsNumber());
 				}
-				// System.out.println("\tNumero: " + primi.getAsNumber());
 			} else if (primi.isBoolean()) {
-				// System.out.println("\tTexto: " + primi.getAsBoolean());
 			}
 		} else if (datos.isJsonNull()) {
-			// System.out.println("Es nulo");
 		}
 	}
 
-
-
-		
-	}
+}

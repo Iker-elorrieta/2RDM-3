@@ -15,23 +15,23 @@ public class menu extends JPanel {
 	 * Create the panel.
 	 */
 	public menu() {
-		setBounds(0, 0, 500, 400);
+		setBounds(0, 0, 900, 700);
 		setLayout(null);
 		
 		btnConsultarHorario = new JButton("Ver horario");
-		btnConsultarHorario.setBounds(167, 134, 140, 23);
+		btnConsultarHorario.setBounds(371, 251, 159, 41);
 		add(btnConsultarHorario);
 		
 		btnOtrosHorarios = new JButton("Ver otros horarios");
-		btnOtrosHorarios.setBounds(167, 190, 140, 23);
+		btnOtrosHorarios.setBounds(371, 317, 159, 41);
 		add(btnOtrosHorarios);
 		
 		btnReuniones = new JButton("Ver reuniones");
-		btnReuniones.setBounds(167, 255, 140, 23);
+		btnReuniones.setBounds(371, 382, 159, 41);
 		add(btnReuniones);
 		
 		btnDesconectar = new JButton("Desconectar");
-		btnDesconectar.setBounds(360, 11, 115, 23);
+		btnDesconectar.setBounds(717, 39, 128, 32);
 		add(btnDesconectar);
 
 	}

@@ -33,9 +33,9 @@ public class HiloServidor extends Thread {
 	String txtNombre;
 	String txtContra;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
-	Transaction tr=ses.beginTransaction();
-	static String url="Centros-Lat-Lon.json";
-	public static ArrayList<Centro> lista=new ArrayList<Centro>();
+	Transaction tr = ses.beginTransaction();
+	static String url = "Centros-Lat-Lon.json";
+	public static ArrayList<Centro> lista = new ArrayList<Centro>();
 
 	public HiloServidor(Socket cliente) {
 		cli = cliente;
@@ -47,7 +47,7 @@ public class HiloServidor extends Thread {
 		try {
 			out = new ObjectOutputStream(cli.getOutputStream());
 			in = new ObjectInputStream(cli.getInputStream());
-			
+
 			JsonParser parser = new JsonParser();
 			try {
 				FileReader fr = new FileReader(url);
@@ -56,7 +56,7 @@ public class HiloServidor extends Thread {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-			
+
 			while (cli.isConnected()) {
 				int accion = -1;
 				try {
@@ -80,23 +80,23 @@ public class HiloServidor extends Thread {
 				case 21:// llenar combo profes
 					llenarCombo();
 					break;
-				case 3: //ver reuniones (json)
+				case 3: // ver reuniones (json)
 					Users id = (Users) in.readObject();
 					verReuniones(id.getId());
 					break;
-				case 31: //ver reuniones pendientes
+				case 31: // ver reuniones pendientes
 					Users idp = (Users) in.readObject();
 					verPendientes(idp.getId());
 					break;
-				case 41: //aceptar reunion
-					String titulo=in.readUTF();
-					int idpr=in.readInt();
-					aceptarReunion(titulo,idpr);
+				case 41: // aceptar reunion
+					String titulo = in.readUTF();
+					int idpr = in.readInt();
+					aceptarReunion(titulo, idpr);
 					break;
-				case 42://rechazar reunion
-					String title=in.readUTF();
-					int idprofe=in.readInt();
-					rechazarReunion(title,idprofe);
+				case 42:// rechazar reunion
+					String title = in.readUTF();
+					int idprofe = in.readInt();
+					rechazarReunion(title, idprofe);
 					break;
 				default:
 				}
@@ -111,23 +111,23 @@ public class HiloServidor extends Thread {
 	}
 
 	private void rechazarReunion(String title, int idprofe) {
-		String qry = "from Reuniones where titulo='" + title +"' and estado='pendiente' and profesor_id="+idprofe;
+		String qry = "from Reuniones where titulo='" + title + "' and profesor_id=" + idprofe +" and estado='pendiente' or estado='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
-			Reuniones actual=(Reuniones) reuniones.get(i);
+			Reuniones actual = (Reuniones) reuniones.get(i);
 			actual.setEstado("denegada");
 			ses.update(actual);
 			tr.commit();
 		}
 	}
 
-	private void aceptarReunion(String titulo,int id) {
-		String qry = "from Reuniones where titulo='" + titulo +"' and estado='pendiente' and profesor_id="+id;
+	private void aceptarReunion(String titulo, int id) {
+		String qry = "from Reuniones where titulo='" + titulo + "' and profesor_id=" + id +"and estado='pendiente' or estado='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
-			Reuniones actual=(Reuniones) reuniones.get(i);
+			Reuniones actual = (Reuniones) reuniones.get(i);
 			actual.setEstado("aceptada");
 			ses.update(actual);
 			tr.commit();
@@ -135,23 +135,24 @@ public class HiloServidor extends Thread {
 	}
 
 	private void verPendientes(int id) {
-		String qry = "from Reuniones where profesor_id=" + id +" and estado='pendiente'";
+		String qry = "from Reuniones where profesor_id=" + id + " and estado='pendiente' or estado='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
-		String columnas[] = { "Estado","Titulo","Asunto","Fecha","Aula","Centro","Alumno","Aceptar","Rechazar"};
+		String columnas[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno", "Aceptar",
+				"Rechazar" };
 		DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 		for (int i = 0; i < reuniones.size(); i++) {
-			Reuniones actual=(Reuniones) reuniones.get(i);
-			String estado=actual.getEstado();
-			String titulo=actual.getTitulo();
-			String asunto=actual.getAsunto();
-			Timestamp fecha=actual.getFecha();
-			String aula=actual.getAula();
-			String centro=getNombreCentro(actual.getIdCentro());
-			String alumno=actual.getUsersByAlumnoId().getNombre()+" "+actual.getUsersByAlumnoId().getApellidos();
-			
-			
-			modelo.addRow(new Object[] {estado,titulo,asunto,String.valueOf(fecha),aula,centro,alumno,new JButton("Aceptar"),new JButton("Rechazar")});
+			Reuniones actual = (Reuniones) reuniones.get(i);
+			String estado = actual.getEstado();
+			String titulo = actual.getTitulo();
+			String asunto = actual.getAsunto();
+			Timestamp fecha = actual.getFecha();
+			String aula = actual.getAula();
+			String centro = getNombreCentro(actual.getIdCentro());
+			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
+
+			modelo.addRow(new Object[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno,
+					new JButton("Aceptar"), new JButton("Rechazar") });
 		}
 		try {
 			out.writeObject(modelo);
@@ -162,21 +163,21 @@ public class HiloServidor extends Thread {
 	}
 
 	private void verReuniones(int id) {
-		String qry = "from Reuniones where profesor_id=" + id +" and estado!='pendiente'";
+		String qry = "from Reuniones where profesor_id=" + id + " and estado!='pendiente' and estado!='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
-		String columnas[] = { "Estado","Titulo","Asunto","Fecha","Aula","Centro","Alumno"};
+		String columnas[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno" };
 		DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
 		for (int i = 0; i < reuniones.size(); i++) {
-			Reuniones actual=(Reuniones) reuniones.get(i);
-			String estado=actual.getEstado();
-			String titulo=actual.getTitulo();
-			String asunto=actual.getAsunto();
-			Timestamp fecha=actual.getFecha();
-			String aula=actual.getAula();		
-			String centro=getNombreCentro(actual.getIdCentro());
-			String alumno=actual.getUsersByAlumnoId().getNombre()+" "+actual.getUsersByAlumnoId().getApellidos();
-			modelo.addRow(new String[]{estado, titulo, asunto, String.valueOf(fecha),aula,centro,alumno});
+			Reuniones actual = (Reuniones) reuniones.get(i);
+			String estado = actual.getEstado();
+			String titulo = actual.getTitulo();
+			String asunto = actual.getAsunto();
+			Timestamp fecha = actual.getFecha();
+			String aula = actual.getAula();
+			String centro = getNombreCentro(actual.getIdCentro());
+			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
+			modelo.addRow(new String[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno });
 		}
 		try {
 			out.writeObject(modelo);
@@ -187,8 +188,8 @@ public class HiloServidor extends Thread {
 	}
 
 	private String getNombreCentro(String idcen) {
-		for(int i=0;i<lista.size();i++) {
-			if(lista.get(i).getIdCentro().equals(idcen)) {
+		for (int i = 0; i < lista.size(); i++) {
+			if (lista.get(i).getIdCentro().equals(idcen)) {
 				return lista.get(i).getNombre();
 			}
 		}

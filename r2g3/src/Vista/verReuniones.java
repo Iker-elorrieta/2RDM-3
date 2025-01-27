@@ -30,11 +30,11 @@ public class verReuniones extends JPanel {
 	 * Create the panel.
 	 */
 	public verReuniones() {
-		setBounds(0, 0, 500, 400);
+		setBounds(0, 0, 900, 700);
 		setLayout(null);
 
 		btnAtras = new JButton("Volver");
-		btnAtras.setBounds(383, 11, 89, 23);
+		btnAtras.setBounds(779, 11, 89, 23);
 		add(btnAtras);
 
 		String columnas[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno" };
@@ -45,7 +45,7 @@ public class verReuniones extends JPanel {
 		modeloP = new DefaultTableModel(columnas2, 0);
 
 		scrollReuniones = new JScrollPane();
-		scrollReuniones.setBounds(10, 45, 462, 181);
+		scrollReuniones.setBounds(31, 125, 837, 181);
 		add(scrollReuniones);
 
 		tablaReuniones = new JTable(modeloR) {
@@ -65,31 +65,32 @@ public class verReuniones extends JPanel {
 				return c;
 			}
 		};
-		tablaReuniones.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tablaReuniones.setAutoCreateColumnsFromModel(false);
 		tablaReuniones.setEnabled(false);
+		tablaReuniones.setAutoCreateColumnsFromModel(false);
 		tablaReuniones.setRowSelectionAllowed(false);
 		tablaReuniones.setAutoCreateRowSorter(true);
 		tablaReuniones.setColumnSelectionAllowed(false);
-		tablaReuniones.getColumnModel().setColumnMargin(2);
+		tablaReuniones.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tablaReuniones.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tablaReuniones.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(20);
+		tablaReuniones.getColumnModel().getColumn(5).setPreferredWidth(150);
+		tablaReuniones.getColumnModel().getColumn(6).setPreferredWidth(90);
+		
 		scrollReuniones.setViewportView(tablaReuniones);
 
 		scrollPendientes = new JScrollPane();
-		scrollPendientes.setBounds(10, 262, 462, 107);
+		scrollPendientes.setBounds(31, 377, 837, 167);
 		add(scrollPendientes);
 
 		tablaPendientes = new JTable(modeloP);
-		tablaPendientes.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tablaPendientes.setAutoCreateColumnsFromModel(false);
 		tablaPendientes.setRowSelectionAllowed(false);
 		tablaPendientes.setAutoCreateRowSorter(true);
 		tablaPendientes.setColumnSelectionAllowed(false);
-		tablaPendientes.getColumnModel().setColumnMargin(2);
 		scrollPendientes.setViewportView(tablaPendientes);
-
 		lblPendientes = new JLabel("Reuniones pendientes");
 		lblPendientes.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPendientes.setBounds(175, 237, 126, 14);
+		lblPendientes.setBounds(389, 352, 126, 14);
 		add(lblPendientes);
 	}
 
