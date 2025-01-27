@@ -33,7 +33,7 @@ public class HiloServidor extends Thread {
 	String txtNombre;
 	String txtContra;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
-	Transaction tr;
+	Transaction tr=ses.beginTransaction();
 	static String url="Centros-Lat-Lon.json";
 	public static ArrayList<Centro> lista=new ArrayList<Centro>();
 
@@ -56,7 +56,6 @@ public class HiloServidor extends Thread {
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-			//lista=Cliente.centros;
 			
 			while (cli.isConnected()) {
 				int accion = -1;
@@ -89,6 +88,16 @@ public class HiloServidor extends Thread {
 					Users idp = (Users) in.readObject();
 					verPendientes(idp.getId());
 					break;
+				case 41: //aceptar reunion
+					String titulo=in.readUTF();
+					int idpr=in.readInt();
+					aceptarReunion(titulo,idpr);
+					break;
+				case 42://rechazar reunion
+					String title=in.readUTF();
+					int idprofe=in.readInt();
+					rechazarReunion(title,idprofe);
+					break;
 				default:
 				}
 			}
@@ -99,6 +108,30 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 
+	}
+
+	private void rechazarReunion(String title, int idprofe) {
+		String qry = "from Reuniones where titulo='" + title +"' and estado='pendiente' and profesor_id="+idprofe;
+		Query q = ses.createQuery(qry);
+		List<?> reuniones = q.list();
+		for (int i = 0; i < reuniones.size(); i++) {
+			Reuniones actual=(Reuniones) reuniones.get(i);
+			actual.setEstado("denegada");
+			ses.update(actual);
+			tr.commit();
+		}
+	}
+
+	private void aceptarReunion(String titulo,int id) {
+		String qry = "from Reuniones where titulo='" + titulo +"' and estado='pendiente' and profesor_id="+id;
+		Query q = ses.createQuery(qry);
+		List<?> reuniones = q.list();
+		for (int i = 0; i < reuniones.size(); i++) {
+			Reuniones actual=(Reuniones) reuniones.get(i);
+			actual.setEstado("aceptada");
+			ses.update(actual);
+			tr.commit();
+		}
 	}
 
 	private void verPendientes(int id) {
