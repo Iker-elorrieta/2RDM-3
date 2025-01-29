@@ -8,14 +8,13 @@ public class Servidor {
 
 	public static void main(String[] args) {
 		try {
-			@SuppressWarnings("resource")
 			ServerSocket serv = new ServerSocket(4000);
 			while (!serv.isClosed()) {
 				Socket cli = serv.accept();
 				// hilo
 				new HiloServidor(cli).start();
-
 			}
+			serv.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

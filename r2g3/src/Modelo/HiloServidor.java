@@ -33,7 +33,7 @@ public class HiloServidor extends Thread {
 	String txtNombre;
 	String txtContra;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
-	Transaction tr = ses.beginTransaction();
+	Transaction tr;
 	static String url = "Centros-Lat-Lon.json";
 	public static ArrayList<Centro> lista = new ArrayList<Centro>();
 
@@ -90,13 +90,15 @@ public class HiloServidor extends Thread {
 					break;
 				case 41: // aceptar reunion
 					String titulo = in.readUTF();
+					String type = in.readUTF();
 					int idpr = in.readInt();
-					aceptarReunion(titulo, idpr);
+					aceptarReunion(titulo, idpr, type);
 					break;
 				case 42:// rechazar reunion
 					String title = in.readUTF();
+					String tipo = in.readUTF();
 					int idprofe = in.readInt();
-					rechazarReunion(title, idprofe);
+					rechazarReunion(title, idprofe, tipo);
 					break;
 				default:
 				}
@@ -106,12 +108,15 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+
 		}
 
 	}
 
-	private void rechazarReunion(String title, int idprofe) {
-		String qry = "from Reuniones where titulo='" + title + "' and profesor_id=" + idprofe +" and estado='pendiente' or estado='conflicto'";
+	private void rechazarReunion(String title, int idprofe, String tipo) {
+		tr = ses.beginTransaction();
+		String qry = "from Reuniones where titulo='" + title + "' and profesor_id=" + idprofe + " and estado='" + tipo
+				+ "'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
@@ -119,11 +124,13 @@ public class HiloServidor extends Thread {
 			actual.setEstado("denegada");
 			ses.update(actual);
 			tr.commit();
+			tr = ses.beginTransaction();
 		}
 	}
 
-	private void aceptarReunion(String titulo, int id) {
-		String qry = "from Reuniones where titulo='" + titulo + "' and profesor_id=" + id +"and estado='pendiente' or estado='conflicto'";
+	private void aceptarReunion(String titulo, int id, String type) {
+		tr = ses.beginTransaction();
+		String qry = "from Reuniones where titulo='" + titulo + "' and profesor_id=" + id + "and estado='" + type + "'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
@@ -131,6 +138,7 @@ public class HiloServidor extends Thread {
 			actual.setEstado("aceptada");
 			ses.update(actual);
 			tr.commit();
+			tr = ses.beginTransaction();
 		}
 	}
 

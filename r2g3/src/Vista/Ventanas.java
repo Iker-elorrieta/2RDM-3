@@ -7,9 +7,6 @@ import javax.swing.border.EmptyBorder;
 
 public class Ventanas extends JFrame{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static enum enumAcciones{
 		CARGAR_LOGIN,

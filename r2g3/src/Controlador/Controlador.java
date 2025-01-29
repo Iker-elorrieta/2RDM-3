@@ -67,7 +67,6 @@ public class Controlador implements ActionListener {
 		// panel reuniones
 		this.vista.getPanelReuniones().getBtnAtras().addActionListener(this);
 		this.vista.getPanelReuniones().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
-
 	}
 
 	@Override
@@ -116,31 +115,39 @@ public class Controlador implements ActionListener {
 	}
 
 	private void rechazarReunion(int row) {
-		metodos.rechazarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString());
+		metodos.rechazarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
 		this.mostrarReuniones();
 	}
 
 	private void aceptarReunion(int row) {
-		metodos.aceptarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString());
+		metodos.aceptarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
 		this.mostrarReuniones();
 	}
 
 	private void mostrarReuniones() {
+		this.vista.getPanelReuniones().getTablaPendientes().removeAll();
+		this.vista.getPanelReuniones().getTablaPendientes().removeEditor();
+		this.vista.getPanelReuniones().getTablaReuniones().removeAll();
+		
+		
 		DefaultTableModel modelo = metodos.getReuniones();
 		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
 
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
 
+		ButtonEditor aceptar=new ButtonEditor("Aceptar", this);
+		ButtonEditor rechazar=new ButtonEditor("Rechazar", this);
+		
 		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
-				.setCellRenderer(new ButtonEditor("Aceptar", this));
+				.setCellEditor(aceptar);
 		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
-				.setCellEditor(new ButtonEditor("Aceptar", this));
+				.setCellRenderer(aceptar.getRenderer());
 
 		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
-				.setCellRenderer(new ButtonEditor("Rechazar", this));
+				.setCellEditor(rechazar);
 		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
-				.setCellEditor(new ButtonEditor("Rechazar", this));
+				.setCellRenderer(rechazar.getRenderer());
 
 	}
 

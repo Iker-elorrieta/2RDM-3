@@ -125,20 +125,22 @@ public class Cliente {
 		return null;
 	}
 
-	public void aceptarReunion(String titulo) {
+	public void aceptarReunion(String titulo, String tipo) {
 		try {
 			out.writeInt(41);
 			out.writeUTF(titulo);
+			out.writeUTF(tipo);
 			out.writeInt(profe.getId());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void rechazarReunion(String string) {
+	public void rechazarReunion(String string, String tipo) {
 		try {
 			out.writeInt(42);
 			out.writeUTF(string);
+			out.writeUTF(tipo);
 			out.writeInt(profe.getId());
 		} catch (IOException e) {
 			e.printStackTrace();

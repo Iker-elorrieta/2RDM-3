@@ -26,6 +26,7 @@ public class ButtonEditor implements TableCellRenderer, TableCellEditor {
 	JPanel panel = new JPanel(new GridBagLayout());
 
 	ActionListener listener;
+
 	public ButtonEditor(String tipo, ActionListener controlador) {
 		if (tipo.contains("Acep")) {
 			button = new JButton("Aceptar");
@@ -41,7 +42,6 @@ public class ButtonEditor implements TableCellRenderer, TableCellEditor {
 		this.column = column;
 		this.table = table;
 		button = (JButton) value;
-		
 
 		if (button.getText().contains("Acep")) {
 			button.setActionCommand(Ventanas.enumAcciones.ACEPTAR_REUNION.toString());
@@ -55,7 +55,7 @@ public class ButtonEditor implements TableCellRenderer, TableCellEditor {
 		return panel;
 	}
 
-	public static TableCellRenderer getRenderer() {
+	public TableCellRenderer getRenderer() {
 		return new TableCellRenderer() {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,

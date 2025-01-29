@@ -13,7 +13,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-
 public class verReuniones extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -59,8 +58,6 @@ public class verReuniones extends JPanel {
 					c.setBackground(Color.GREEN);
 				} else if (getModel().getValueAt(modelRow, 0).toString().equals("denegada")) {
 					c.setBackground(Color.RED);
-				} else if (getModel().getValueAt(modelRow, 0).toString().equals("conflicto")) {
-					c.setBackground(Color.YELLOW);
 				}
 				return c;
 			}
@@ -76,7 +73,6 @@ public class verReuniones extends JPanel {
 		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(20);
 		tablaReuniones.getColumnModel().getColumn(5).setPreferredWidth(150);
 		tablaReuniones.getColumnModel().getColumn(6).setPreferredWidth(90);
-		
 		scrollReuniones.setViewportView(tablaReuniones);
 
 		scrollPendientes = new JScrollPane();
@@ -87,7 +83,18 @@ public class verReuniones extends JPanel {
 		tablaPendientes.setRowSelectionAllowed(false);
 		tablaPendientes.setAutoCreateRowSorter(true);
 		tablaPendientes.setColumnSelectionAllowed(false);
+		tablaPendientes.setAutoCreateColumnsFromModel(false);
+		tablaPendientes.getColumnModel().getColumn(0).setPreferredWidth(60);
+		tablaPendientes.getColumnModel().getColumn(1).setPreferredWidth(150);
+		tablaPendientes.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tablaPendientes.getColumnModel().getColumn(4).setPreferredWidth(60);
+		tablaPendientes.getColumnModel().getColumn(5).setPreferredWidth(180);
+		tablaPendientes.getColumnModel().getColumn(6).setPreferredWidth(100);
+		tablaPendientes.getColumnModel().getColumn(7).setPreferredWidth(90);
+		tablaPendientes.getColumnModel().getColumn(8).setPreferredWidth(90);
+		tablaPendientes.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollPendientes.setViewportView(tablaPendientes);
+
 		lblPendientes = new JLabel("Reuniones pendientes");
 		lblPendientes.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPendientes.setBounds(389, 352, 126, 14);
