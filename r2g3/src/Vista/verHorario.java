@@ -5,6 +5,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
+import java.awt.Font;
 
 public class verHorario extends JPanel {
 
@@ -23,7 +24,8 @@ public class verHorario extends JPanel {
 		modelo=new DefaultTableModel(columnas,0);
 		
 		btnVolver = new JButton("Volver");
-		btnVolver.setBounds(774, 11, 89, 23);
+		btnVolver.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnVolver.setBounds(760, 30, 103, 33);
 		add(btnVolver);
 		
 		tabla = new JTable(modelo);

@@ -2,7 +2,6 @@ package Controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
@@ -74,14 +73,10 @@ public class Controlador implements ActionListener {
 		Ventanas.enumAcciones accion = Ventanas.enumAcciones.valueOf(e.getActionCommand());
 		switch (accion) {
 		case BTN_LOGIN:
-			try {
-				boolean resultado = loginComprobar(this.vista.getPanelLogin().getUser().getText(),
-						String.valueOf(this.vista.getPanelLogin().getContra().getPassword()));
-				if (resultado)
-					vista.mVisualizarPaneles(Ventanas.enumAcciones.CARGAR_MENU);
-			} catch (NoSuchAlgorithmException | IOException e1) {
-				e1.printStackTrace();
-			}
+			boolean resultado = loginComprobar(this.vista.getPanelLogin().getUser().getText(),
+					String.valueOf(this.vista.getPanelLogin().getContra().getPassword()));
+			if (resultado)
+				vista.mVisualizarPaneles(Ventanas.enumAcciones.CARGAR_MENU);
 			break;
 		case DESCONECTAR:
 			desconectar();
@@ -115,12 +110,14 @@ public class Controlador implements ActionListener {
 	}
 
 	private void rechazarReunion(int row) {
-		metodos.rechazarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
+		metodos.rechazarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),
+				vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
 		this.mostrarReuniones();
 	}
 
 	private void aceptarReunion(int row) {
-		metodos.aceptarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
+		metodos.aceptarReunion(vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 1).toString(),
+				vista.getPanelReuniones().getTablaPendientes().getValueAt(row, 0).toString());
 		this.mostrarReuniones();
 	}
 
@@ -128,33 +125,29 @@ public class Controlador implements ActionListener {
 		this.vista.getPanelReuniones().getTablaPendientes().removeAll();
 		this.vista.getPanelReuniones().getTablaPendientes().removeEditor();
 		this.vista.getPanelReuniones().getTablaReuniones().removeAll();
-		
-		
+
 		DefaultTableModel modelo = metodos.getReuniones();
 		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
 
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
 
-		ButtonEditor aceptar=new ButtonEditor("Aceptar", this);
-		ButtonEditor rechazar=new ButtonEditor("Rechazar", this);
-		
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
-				.setCellEditor(aceptar);
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar")
-				.setCellRenderer(aceptar.getRenderer());
+		ButtonEditor aceptar = new ButtonEditor("Aceptar", this);
+		ButtonEditor rechazar = new ButtonEditor("Rechazar", this);
 
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
-				.setCellEditor(rechazar);
-		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar")
-				.setCellRenderer(rechazar.getRenderer());
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellEditor(aceptar);
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Aceptar").setCellRenderer(aceptar.getRenderer());
 
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellEditor(rechazar);
+		vista.getPanelReuniones().getTablaPendientes().getColumn("Rechazar").setCellRenderer(rechazar.getRenderer());
 	}
 
 	@SuppressWarnings("unchecked")
 	private void llenarComboProfes() {
 		DefaultComboBoxModel<?> modelo = metodos.llenarComboProfes();
 		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
+		vista.getPanelOtrosHorarios().getComboProfes().setSelectedIndex(1);
+		mostrarHorario();
 	}
 
 	private void selectProfe() {
@@ -166,11 +159,16 @@ public class Controlador implements ActionListener {
 	private void mostrarHorario() {
 		DefaultTableModel modelo = metodos.getHorario();
 		vista.getPanelHorario().getTabla().setModel(modelo);
+		vista.getPanelOtrosHorarios().getTabla().setModel(modelo);
 	}
 
-	private boolean loginComprobar(String usuario, String contra) throws NoSuchAlgorithmException, IOException {
-		if (metodos.login(Resumir(usuario), Resumir(contra))) {
-			return true;
+	private boolean loginComprobar(String usuario, String contra) {
+		try {
+			if (metodos.login(Resumir(usuario), Resumir(contra))) {
+				return true;
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -198,7 +196,6 @@ public class Controlador implements ActionListener {
 				JsonElement entrada = iter.next();
 				parserDatos(entrada);
 			}
-
 		} else if (datos.isJsonObject()) {
 			JsonObject objeto = datos.getAsJsonObject();
 			Iterator<Map.Entry<String, JsonElement>> iter2 = objeto.entrySet().iterator();

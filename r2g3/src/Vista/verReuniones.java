@@ -10,8 +10,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import java.awt.Font;
 
 public class verReuniones extends JPanel {
 
@@ -33,11 +34,12 @@ public class verReuniones extends JPanel {
 		setLayout(null);
 
 		btnAtras = new JButton("Volver");
-		btnAtras.setBounds(779, 11, 89, 23);
+		btnAtras.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAtras.setBounds(764, 11, 104, 35);
 		add(btnAtras);
 
-		String columnas[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno" };
-		modeloR = new DefaultTableModel(columnas, 0);
+		String columnas[] = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" };
+		modeloR = new DefaultTableModel(columnas, 5);
 
 		String columnas2[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno", "Aceptar",
 				"Rechazar" };
@@ -47,32 +49,26 @@ public class verReuniones extends JPanel {
 		scrollReuniones.setBounds(31, 125, 837, 181);
 		add(scrollReuniones);
 
-		tablaReuniones = new JTable(modeloR) {
-			private static final long serialVersionUID = 1L;
+		tablaReuniones = new JTable(modeloR);
 
-			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
-				Component c = super.prepareRenderer(renderer, row, column);
-				int modelRow = convertRowIndexToModel(row);
-
-				if (getModel().getValueAt(modelRow, 0).toString().equals("aceptada")) {
-					c.setBackground(Color.GREEN);
-				} else if (getModel().getValueAt(modelRow, 0).toString().equals("denegada")) {
-					c.setBackground(Color.RED);
-				}
-				return c;
-			}
-		};
+		tablaReuniones.getColumnModel().getColumn(0).setCellRenderer(new CellRenderer());
+		tablaReuniones.getColumnModel().getColumn(1).setCellRenderer(new CellRenderer());
+		tablaReuniones.getColumnModel().getColumn(2).setCellRenderer(new CellRenderer());
+		tablaReuniones.getColumnModel().getColumn(3).setCellRenderer(new CellRenderer());
+		tablaReuniones.getColumnModel().getColumn(4).setCellRenderer(new CellRenderer());
+		
+		
 		tablaReuniones.setEnabled(false);
 		tablaReuniones.setAutoCreateColumnsFromModel(false);
 		tablaReuniones.setRowSelectionAllowed(false);
 		tablaReuniones.setAutoCreateRowSorter(true);
 		tablaReuniones.setColumnSelectionAllowed(false);
-		tablaReuniones.getColumnModel().getColumn(0).setPreferredWidth(50);
-		tablaReuniones.getColumnModel().getColumn(1).setPreferredWidth(100);
-		tablaReuniones.getColumnModel().getColumn(3).setPreferredWidth(100);
-		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(20);
-		tablaReuniones.getColumnModel().getColumn(5).setPreferredWidth(150);
-		tablaReuniones.getColumnModel().getColumn(6).setPreferredWidth(90);
+		tablaReuniones.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tablaReuniones.getColumnModel().getColumn(0).setPreferredWidth(200);
+		tablaReuniones.getColumnModel().getColumn(1).setPreferredWidth(200);
+		tablaReuniones.getColumnModel().getColumn(2).setPreferredWidth(200);
+		tablaReuniones.getColumnModel().getColumn(3).setPreferredWidth(200);
+		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(200);
 		scrollReuniones.setViewportView(tablaReuniones);
 
 		scrollPendientes = new JScrollPane();
@@ -119,5 +115,23 @@ public class verReuniones extends JPanel {
 
 	public DefaultTableModel getModeloP() {
 		return modeloP;
+	}
+
+	public class CellRenderer extends DefaultTableCellRenderer {
+		private static final long serialVersionUID = 1L;
+
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+				int row, int col) {
+			JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+			if (l.getText().toString().contains("aceptada")) {
+				l.setBackground(Color.GREEN);
+			} else if(l.getText().toString().contains("denegada")){
+				l.setBackground(Color.RED);
+			}else {
+				l.setBackground(Color.WHITE);
+			}
+			return l;
+		};
 	}
 }

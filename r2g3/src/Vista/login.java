@@ -6,6 +6,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import java.awt.Font;
 
 public class login extends JPanel {
 
@@ -25,29 +26,32 @@ public class login extends JPanel {
 		setLayout(null);
 		
 		user = new JTextField();
-		user.setBounds(421, 339, 123, 20);
+		user.setBounds(421, 339, 134, 33);
 		add(user);
 		
 		contra = new JPasswordField();
-		contra.setBounds(421, 386, 123, 20);
+		contra.setBounds(421, 386, 134, 33);
 		add(contra);
 		
 		lblUser = new JLabel("Usuario");
-		lblUser.setBounds(325, 342, 46, 14);
+		lblUser.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblUser.setBounds(326, 348, 56, 14);
 		add(lblUser);
 		
 		lblCon = new JLabel("Contraseña");
-		lblCon.setBounds(325, 389, 86, 14);
+		lblCon.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblCon.setBounds(326, 393, 86, 14);
 		add(lblCon);
 		
 		btnLogin = new JButton("Login");
-		btnLogin.setBounds(391, 437, 89, 23);
+		btnLogin.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnLogin.setBounds(379, 452, 105, 33);
 		add(btnLogin);
 		
 		String fotopath="logo-elorrieta.jpg";
 		ImageIcon foto = new ImageIcon(fotopath);
 		logoElorrieta = new JLabel(foto);
-		logoElorrieta.setBounds(89, 30, 758, 272);
+		logoElorrieta.setBounds(79, 30, 768, 288);
 		add(logoElorrieta);
 
 	}

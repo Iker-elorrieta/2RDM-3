@@ -80,7 +80,7 @@ public class HiloServidor extends Thread {
 				case 21:// llenar combo profes
 					llenarCombo();
 					break;
-				case 3: // ver reuniones (json)
+				case 3: // ver reuniones
 					Users id = (Users) in.readObject();
 					verReuniones(id.getId());
 					break;
@@ -108,7 +108,6 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-
 		}
 
 	}
@@ -158,7 +157,7 @@ public class HiloServidor extends Thread {
 			String aula = actual.getAula();
 			String centro = getNombreCentro(actual.getIdCentro());
 			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
-
+	
 			modelo.addRow(new Object[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno,
 					new JButton("Aceptar"), new JButton("Rechazar") });
 		}
@@ -174,24 +173,41 @@ public class HiloServidor extends Thread {
 		String qry = "from Reuniones where profesor_id=" + id + " and estado!='pendiente' and estado!='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
-		String columnas[] = { "Estado", "Titulo", "Asunto", "Fecha", "Aula", "Centro", "Alumno" };
-		DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+		String columnas[] = {"Lunes","Martes","Miércoles","Jueves","Viernes"};
+		DefaultTableModel modelo = new DefaultTableModel(columnas, 5);
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
 			String estado = actual.getEstado();
 			String titulo = actual.getTitulo();
-			String asunto = actual.getAsunto();
 			Timestamp fecha = actual.getFecha();
-			String aula = actual.getAula();
-			String centro = getNombreCentro(actual.getIdCentro());
-			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
-			modelo.addRow(new String[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno });
+			
+			int dia=horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
+			int hora=horaReunion(fecha.toLocalDateTime().getHour());	
+			
+			modelo.setValueAt(estado + " - " +titulo, hora, dia);
 		}
 		try {
 			out.writeObject(modelo);
 			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private int horaReunion(int hour) {
+		switch(hour) {
+		case 8:
+			return 0;
+		case 9:
+			return 1;
+		case 10:
+			return 2;
+		case 11:
+			return 3;
+		case 12:
+			return 4;
+		default:
+			return 0;
 		}
 	}
 
@@ -234,7 +250,7 @@ public class HiloServidor extends Thread {
 		for (int i = 0; i < horario.size(); i++) {
 			Horarios temp = (Horarios) horario.get(i);
 			HorariosId h = temp.getId();
-			int dia = horarioDia(h);
+			int dia = horarioDia(h.getDia());
 			int hora = Character.getNumericValue(h.getHora()) - 1;
 			String modulo = horarioModulo(h.getModuloId());
 			modelo.setValueAt(modulo, hora, dia);
@@ -256,7 +272,7 @@ public class HiloServidor extends Thread {
 		for (int i = 0; i < horario.size(); i++) {
 			Horarios temp = (Horarios) horario.get(i);
 			HorariosId h = temp.getId();
-			int dia = horarioDia(h);
+			int dia = horarioDia(h.getDia());
 			int hora = Character.getNumericValue(h.getHora()) - 1;
 			String modulo = horarioModulo(h.getModuloId());
 			modelo.setValueAt(modulo, hora, dia);
@@ -277,17 +293,22 @@ public class HiloServidor extends Thread {
 		return temp.getNombre();
 	}
 
-	private int horarioDia(HorariosId h) {
-		switch (h.getDia()) {
+	private int horarioDia(String string) {
+		switch (string) {
 		case "L/A":
+		case "MONDAY":
 			return 0;
 		case "M/A":
+		case "TUESDAY":
 			return 1;
 		case "X":
+		case "WEDNESDAY":
 			return 2;
 		case "J/O":
+		case "THURSDAY":
 			return 3;
 		case "V/O":
+		case "FRIDAY":
 			return 4;
 		default:
 			return 0;
@@ -346,7 +367,6 @@ public class HiloServidor extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public String Resumir(String frase) throws NoSuchAlgorithmException {

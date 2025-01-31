@@ -2,6 +2,7 @@ package Vista;
 
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import java.awt.Font;
 
 public class menu extends JPanel {
 
@@ -19,19 +20,23 @@ public class menu extends JPanel {
 		setLayout(null);
 		
 		btnConsultarHorario = new JButton("Ver horario");
-		btnConsultarHorario.setBounds(371, 251, 159, 41);
+		btnConsultarHorario.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnConsultarHorario.setBounds(371, 251, 170, 49);
 		add(btnConsultarHorario);
 		
 		btnOtrosHorarios = new JButton("Ver otros horarios");
-		btnOtrosHorarios.setBounds(371, 317, 159, 41);
+		btnOtrosHorarios.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnOtrosHorarios.setBounds(371, 317, 170, 49);
 		add(btnOtrosHorarios);
 		
 		btnReuniones = new JButton("Ver reuniones");
-		btnReuniones.setBounds(371, 382, 159, 41);
+		btnReuniones.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnReuniones.setBounds(371, 393, 170, 49);
 		add(btnReuniones);
 		
 		btnDesconectar = new JButton("Desconectar");
-		btnDesconectar.setBounds(717, 39, 128, 32);
+		btnDesconectar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnDesconectar.setBounds(710, 32, 143, 41);
 		add(btnDesconectar);
 
 	}

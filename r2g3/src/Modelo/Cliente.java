@@ -131,6 +131,7 @@ public class Cliente {
 			out.writeUTF(titulo);
 			out.writeUTF(tipo);
 			out.writeInt(profe.getId());
+			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -142,6 +143,7 @@ public class Cliente {
 			out.writeUTF(string);
 			out.writeUTF(tipo);
 			out.writeInt(profe.getId());
+			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

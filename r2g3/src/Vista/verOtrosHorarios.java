@@ -7,6 +7,7 @@ import javax.swing.table.DefaultTableModel;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import java.awt.Font;
 
 public class verOtrosHorarios extends JPanel {
 
@@ -37,7 +38,8 @@ public class verOtrosHorarios extends JPanel {
 		scrollPane.setViewportView(tabla);
 		
 		btnAtras = new JButton("Volver");
-		btnAtras.setBounds(771, 11, 88, 23);
+		btnAtras.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAtras.setBounds(778, 11, 98, 37);
 		add(btnAtras);
 		
 		comboProfes = new JComboBox<String>();

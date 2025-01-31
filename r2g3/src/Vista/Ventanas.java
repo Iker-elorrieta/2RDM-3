@@ -46,8 +46,7 @@ public class Ventanas extends JFrame{
 
 	private void mCrearPanelOtrosHorarios() {
 		panelOtrosHorarios=new verOtrosHorarios();
-		panelContenedor.add(panelOtrosHorarios);
-		
+		panelContenedor.add(panelOtrosHorarios);	
 	}
 
 	private void mCrearPanelHorario() {
