@@ -79,7 +79,7 @@ public class HiloServidor extends Thread {
 					verOtroHorario(nomprof);
 					break;
 				case 21:// llenar combo profes
-					String nombre=in.readUTF();
+					String nombre = in.readUTF();
 					llenarCombo(nombre);
 					break;
 				case 3: // ver reuniones
@@ -122,10 +122,12 @@ public class HiloServidor extends Thread {
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
+			if(!comprobarConflicto(actual)) {
 			actual.setEstado("denegada");
 			ses.update(actual);
 			tr.commit();
 			tr = ses.beginTransaction();
+			}
 		}
 	}
 
@@ -136,11 +138,29 @@ public class HiloServidor extends Thread {
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
+			if(!comprobarConflicto(actual)) {
+				System.out.println("hace bien metodo");
 			actual.setEstado("aceptada");
 			ses.update(actual);
 			tr.commit();
 			tr = ses.beginTransaction();
+			}
 		}
+	}
+
+	private boolean comprobarConflicto(Reuniones actual) {
+		String qry2 = "from Reuniones where estado='aceptada' or estado='denegada' and fecha='" + actual.getFecha()
+				+ "'";
+		Query q2 = ses.createQuery(qry2);
+		List<?> comprobar = q2.list();
+		if (comprobar.size() > 0) {
+			actual.setEstado("conflicto");
+			ses.update(actual);
+			tr.commit();
+			tr = ses.beginTransaction();
+			return true;
+		}
+		return false;
 	}
 
 	private void verPendientes(int id) {
@@ -159,7 +179,7 @@ public class HiloServidor extends Thread {
 			String aula = actual.getAula();
 			String centro = getNombreCentro(actual.getIdCentro());
 			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
-	
+
 			modelo.addRow(new Object[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno,
 					new JButton("Aceptar"), new JButton("Rechazar") });
 		}
@@ -175,7 +195,7 @@ public class HiloServidor extends Thread {
 		String qry = "from Reuniones where profesor_id=" + id + " and estado!='pendiente' and estado!='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
-		String columnas[] = {"Lunes","Martes","Miércoles","Jueves","Viernes"};
+		String columnas[] = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" };
 		DefaultTableModel modelo = new DefaultTableModel(columnas, 5);
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
@@ -183,10 +203,11 @@ public class HiloServidor extends Thread {
 			String titulo = actual.getTitulo();
 			Timestamp fecha = actual.getFecha();
 			String centro = getNombreCentro(actual.getIdCentro());
-			int dia=horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
-			int hora=horaReunion(fecha.toLocalDateTime().getHour());	
-			
-			modelo.setValueAt(estado + " - " +titulo + " | Centro: "+centro +" - "+this.municipioCentro, hora, dia);
+			int dia = horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
+			int hora = horaReunion(fecha.toLocalDateTime().getHour());
+
+			modelo.setValueAt(estado + " - " + titulo + " | Centro: " + centro + " - " + this.municipioCentro, hora,
+					dia);
 		}
 		try {
 			out.writeObject(modelo);
@@ -197,7 +218,7 @@ public class HiloServidor extends Thread {
 	}
 
 	private int horaReunion(int hour) {
-		switch(hour) {
+		switch (hour) {
 		case 8:
 			return 0;
 		case 9:
@@ -216,16 +237,15 @@ public class HiloServidor extends Thread {
 	private String getNombreCentro(String idcen) {
 		for (int i = 0; i < lista.size(); i++) {
 			if (lista.get(i).getIdCentro().equals(idcen)) {
-				this.municipioCentro=lista.get(i).getMunicipio();
+				this.municipioCentro = lista.get(i).getMunicipio();
 				return lista.get(i).getNombre();
 			}
 		}
 		return null;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void llenarCombo(String nombre) throws IOException {
-		Users indice=null;
+		Users indice = null;
 		String qry = "from Users where tipo_id=3";
 		Query q = ses.createQuery(qry);
 		List<?> profesores = q.list();
@@ -234,12 +254,12 @@ public class HiloServidor extends Thread {
 		for (int i = 0; i < profesores.size(); i++) {
 			Users actual = (Users) profesores.get(i);
 			listaprofes.add(actual.getNombre() + " " + actual.getApellidos());
-			if(actual.getNombre().equals(nombre)) {
-				indice=actual;
+			if (actual.getNombre().equals(nombre)) {
+				indice = actual;
 			}
 		}
-		modelo = new DefaultComboBoxModel(listaprofes.toArray());
-		modelo.setSelectedItem(indice.getNombre()+" "+indice.getApellidos());
+		modelo = new DefaultComboBoxModel<>(listaprofes.toArray());
+		modelo.setSelectedItem(indice.getNombre() + " " + indice.getApellidos());
 		out.writeObject(modelo);
 		out.flush();
 	}
@@ -343,14 +363,15 @@ public class HiloServidor extends Thread {
 							out.flush();
 							return true;
 						}
-						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.","Error",JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 					out.writeBoolean(false);
 					out.flush();
 					return false;
 				}
 			}
-			JOptionPane.showMessageDialog(null, "Usuario incorrecto.","Error",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Usuario incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
 			out.writeBoolean(false);
 			out.flush();
 			return false;
@@ -360,20 +381,6 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@SuppressWarnings("unused")
-	private void guardado() {
-		try {
-			tr = ses.beginTransaction();
-			Ciclos nuevo = new Ciclos();
-			nuevo.setId(6);
-			nuevo.setNombre("CICLO");
-			ses.save(nuevo);
-			tr.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public String Resumir(String frase) throws NoSuchAlgorithmException {

@@ -76,6 +76,21 @@ public class verReuniones extends JPanel {
 		add(scrollPendientes);
 
 		tablaPendientes = new JTable(modeloP);
+		tablaPendientes.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+			@Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+		    {
+		        final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        if(table.getValueAt(row, 0).toString().contains("pend")) {
+		        	c.setBackground(Color.YELLOW);
+		        }else {
+		        	c.setBackground(Color.LIGHT_GRAY);
+		        }
+		        return c;
+		    }
+		});
+		
 		tablaPendientes.setRowSelectionAllowed(false);
 		tablaPendientes.setAutoCreateRowSorter(true);
 		tablaPendientes.setColumnSelectionAllowed(false);

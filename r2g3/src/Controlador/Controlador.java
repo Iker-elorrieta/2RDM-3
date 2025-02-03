@@ -229,8 +229,10 @@ public class Controlador implements ActionListener {
 				if (dato == 1) {
 					id = String.valueOf(primi.getAsNumber());
 				}
-			} else if (primi.isBoolean()) {}
-		} else if (datos.isJsonNull()) {}
+			} else if (primi.isBoolean()) {
+			}
+		} else if (datos.isJsonNull()) {
+		}
 	}
 
 }
