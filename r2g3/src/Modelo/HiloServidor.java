@@ -79,7 +79,8 @@ public class HiloServidor extends Thread {
 					verOtroHorario(nomprof);
 					break;
 				case 21:// llenar combo profes
-					llenarCombo();
+					String nombre=in.readUTF();
+					llenarCombo(nombre);
 					break;
 				case 3: // ver reuniones
 					Users id = (Users) in.readObject();
@@ -223,7 +224,8 @@ public class HiloServidor extends Thread {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void llenarCombo() throws IOException {
+	private void llenarCombo(String nombre) throws IOException {
+		Users indice=null;
 		String qry = "from Users where tipo_id=3";
 		Query q = ses.createQuery(qry);
 		List<?> profesores = q.list();
@@ -232,8 +234,12 @@ public class HiloServidor extends Thread {
 		for (int i = 0; i < profesores.size(); i++) {
 			Users actual = (Users) profesores.get(i);
 			listaprofes.add(actual.getNombre() + " " + actual.getApellidos());
+			if(actual.getNombre().equals(nombre)) {
+				indice=actual;
+			}
 		}
 		modelo = new DefaultComboBoxModel(listaprofes.toArray());
+		modelo.setSelectedItem(indice.getNombre()+" "+indice.getApellidos());
 		out.writeObject(modelo);
 		out.flush();
 	}
@@ -243,7 +249,7 @@ public class HiloServidor extends Thread {
 		String profeq = "from Users where nombre='" + nom + "'";
 		Query q1 = ses.createQuery(profeq);
 		List<?> profenom = q1.list();
-		Users profeSelec = (Users) profenom.get(0);
+		Users profeSelec = (Users) profenom.getFirst();
 		String qry = "from Horarios where profe_id=" + profeSelec.getId();
 		Query q = ses.createQuery(qry);
 		List<?> horario = q.list();
@@ -291,7 +297,7 @@ public class HiloServidor extends Thread {
 		String qry = "from Modulos where id=" + moduloId;
 		Query q = ses.createQuery(qry);
 		List<?> modulo = q.list();
-		Modulos temp = (Modulos) modulo.get(0);
+		Modulos temp = (Modulos) modulo.getFirst();
 		return temp.getNombre();
 	}
 
@@ -335,17 +341,16 @@ public class HiloServidor extends Thread {
 							out.writeBoolean(true);
 							out.writeObject(temp);
 							out.flush();
-							// guardado();
 							return true;
 						}
-						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
+						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.","Error",JOptionPane.ERROR_MESSAGE);
 					}
 					out.writeBoolean(false);
 					out.flush();
 					return false;
 				}
 			}
-			JOptionPane.showMessageDialog(null, "Usuario incorrecto.");
+			JOptionPane.showMessageDialog(null, "Usuario incorrecto.","Error",JOptionPane.ERROR_MESSAGE);
 			out.writeBoolean(false);
 			out.flush();
 			return false;

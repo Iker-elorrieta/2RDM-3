@@ -146,7 +146,6 @@ public class Controlador implements ActionListener {
 	private void llenarComboProfes() {
 		DefaultComboBoxModel<?> modelo = metodos.llenarComboProfes();
 		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
-		vista.getPanelOtrosHorarios().getComboProfes().setSelectedIndex(1);
 		mostrarHorario();
 	}
 
@@ -230,10 +229,8 @@ public class Controlador implements ActionListener {
 				if (dato == 1) {
 					id = String.valueOf(primi.getAsNumber());
 				}
-			} else if (primi.isBoolean()) {
-			}
-		} else if (datos.isJsonNull()) {
-		}
+			} else if (primi.isBoolean()) {}
+		} else if (datos.isJsonNull()) {}
 	}
 
 }

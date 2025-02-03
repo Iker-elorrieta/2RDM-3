@@ -84,6 +84,7 @@ public class Cliente {
 	public DefaultComboBoxModel<?> llenarComboProfes() {
 		try {
 			out.writeInt(21);
+			out.writeUTF(profe.getNombre());
 			out.flush();
 			DefaultComboBoxModel<?> modelo = (DefaultComboBoxModel<?>) in.readObject();
 			return modelo;
