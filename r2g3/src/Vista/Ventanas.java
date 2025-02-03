@@ -4,14 +4,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class VentanasR2 extends JFrame{
 
-	/**
-	 * 
-	 */
+public class Ventanas extends JFrame{
+
 	private static final long serialVersionUID = 1L;
-
-	
 	public static enum enumAcciones{
 		CARGAR_LOGIN,
 		BTN_LOGIN,
@@ -24,7 +20,7 @@ public class VentanasR2 extends JFrame{
 		ACEPTAR_REUNION,
 		RECHAZAR_REUNION
 	}
-	
+	//paneles declaraciones
 	private JPanel panelContenedor;
 	private login panelLogin;
 	private menu panelMenu;
@@ -32,7 +28,9 @@ public class VentanasR2 extends JFrame{
 	private verOtrosHorarios panelOtrosHorarios;
 	private verReuniones panelReuniones;
 	
-	public VentanasR2() {
+	
+	//crear paneles
+	public Ventanas() {
 		mCrearPanelContenedor();
 		mCrearPanelMenu();
 		mCrearPanelHorario();
@@ -41,8 +39,6 @@ public class VentanasR2 extends JFrame{
 		mCrearPanelLogin();
 	}
 	
-	
-
 	private void mCrearPanelReuniones() {
 		panelReuniones=new verReuniones();
 		panelContenedor.add(panelReuniones);
@@ -50,8 +46,7 @@ public class VentanasR2 extends JFrame{
 
 	private void mCrearPanelOtrosHorarios() {
 		panelOtrosHorarios=new verOtrosHorarios();
-		panelContenedor.add(panelOtrosHorarios);
-		
+		panelContenedor.add(panelOtrosHorarios);	
 	}
 
 	private void mCrearPanelHorario() {
@@ -61,7 +56,7 @@ public class VentanasR2 extends JFrame{
 
 	private void mCrearPanelContenedor() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(250, 150, 500, 410);
+		setBounds(300, 150, 900, 700);
 		panelContenedor = new JPanel();
 		panelContenedor.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelContenedor);
@@ -78,7 +73,7 @@ public class VentanasR2 extends JFrame{
 		panelMenu=new menu();
 		panelContenedor.add(panelMenu);
 	}
-	
+	//visualizar paneles
 	public void mVisualizarPaneles(enumAcciones panel) {
 		panelLogin.setVisible(false);
 		panelMenu.setVisible(false);
@@ -105,8 +100,7 @@ public class VentanasR2 extends JFrame{
 		default:
 		}
 	}
-
-
+	//getters
 	public login getPanelLogin() {
 		return panelLogin;
 	}

@@ -1,5 +1,5 @@
 package Modelo;
-// Generated 14 ene 2025, 11:45:39 by Hibernate Tools 6.5.1.Final
+// Generated 21 ene 2025, 12:41:26 by Hibernate Tools 6.5.1.Final
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +15,8 @@ public class Ciclos implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nombre;
-	private Set<Object> matriculacioneses = new HashSet<Object>(0);
-	private Set<Object> moduloses = new HashSet<Object>(0);
+	private Set<?> matriculacioneses = new HashSet<Object>(0);
+	private Set<?> moduloses = new HashSet<Object>(0);
 
 	public Ciclos() {
 	}
@@ -25,7 +25,7 @@ public class Ciclos implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Ciclos(int id, String nombre, Set<Object> matriculacioneses, Set<Object> moduloses) {
+	public Ciclos(int id, String nombre, Set<?> matriculacioneses, Set<?> moduloses) {
 		this.id = id;
 		this.nombre = nombre;
 		this.matriculacioneses = matriculacioneses;
@@ -48,19 +48,19 @@ public class Ciclos implements java.io.Serializable {
 		this.nombre = nombre;
 	}
 
-	public Set<Object> getMatriculacioneses() {
+	public Set<?> getMatriculacioneses() {
 		return this.matriculacioneses;
 	}
 
-	public void setMatriculacioneses(Set<Object> matriculacioneses) {
+	public void setMatriculacioneses(Set<?> matriculacioneses) {
 		this.matriculacioneses = matriculacioneses;
 	}
 
-	public Set<Object> getModuloses() {
+	public Set<?> getModuloses() {
 		return this.moduloses;
 	}
 
-	public void setModuloses(Set<Object> moduloses) {
+	public void setModuloses(Set<?> moduloses) {
 		this.moduloses = moduloses;
 	}
 

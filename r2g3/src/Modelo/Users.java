@@ -1,5 +1,5 @@
 package Modelo;
-// Generated 14 ene 2025, 11:45:39 by Hibernate Tools 6.5.1.Final
+// Generated 21 ene 2025, 12:41:26 by Hibernate Tools 6.5.1.Final
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,9 +26,9 @@ public class Users implements java.io.Serializable {
 	private Integer telefono2;
 	private byte[] argazkia;
 	private Set<Object> matriculacioneses = new HashSet<Object>(0);
-	private Set<Object> reunionesesForProfesorId = new HashSet<Object>(0);
-	private Set<Object> reunionesesForAlumnoId = new HashSet<Object>(0);
-	private Set<Object> horarioses = new HashSet<Object>(0);
+	private Set<?> reunionesesForProfesorId = new HashSet<Object>(0);
+	private Set<?> reunionesesForAlumnoId = new HashSet<Object>(0);
+	private Set<?> horarioses = new HashSet<Object>(0);
 
 	public Users() {
 	}
@@ -40,7 +40,7 @@ public class Users implements java.io.Serializable {
 
 	public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
 			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia, Set<Object> matriculacioneses,
-			Set<Object> reunionesesForProfesorId, Set<Object> reunionesesForAlumnoId, Set<Object> horarioses) {
+			Set<?> reunionesesForProfesorId, Set<?> reunionesesForAlumnoId, Set<?> horarioses) {
 		this.id = id;
 		this.tipos = tipos;
 		this.email = email;
@@ -163,27 +163,27 @@ public class Users implements java.io.Serializable {
 		this.matriculacioneses = matriculacioneses;
 	}
 
-	public Set<Object> getReunionesesForProfesorId() {
+	public Set<?> getReunionesesForProfesorId() {
 		return this.reunionesesForProfesorId;
 	}
 
-	public void setReunionesesForProfesorId(Set<Object> reunionesesForProfesorId) {
+	public void setReunionesesForProfesorId(Set<?> reunionesesForProfesorId) {
 		this.reunionesesForProfesorId = reunionesesForProfesorId;
 	}
 
-	public Set<Object> getReunionesesForAlumnoId() {
+	public Set<?> getReunionesesForAlumnoId() {
 		return this.reunionesesForAlumnoId;
 	}
 
-	public void setReunionesesForAlumnoId(Set<Object> reunionesesForAlumnoId) {
+	public void setReunionesesForAlumnoId(Set<?> reunionesesForAlumnoId) {
 		this.reunionesesForAlumnoId = reunionesesForAlumnoId;
 	}
 
-	public Set<Object> getHorarioses() {
+	public Set<?> getHorarioses() {
 		return this.horarioses;
 	}
 
-	public void setHorarioses(Set<Object> horarioses) {
+	public void setHorarioses(Set<?> horarioses) {
 		this.horarioses = horarioses;
 	}
 
