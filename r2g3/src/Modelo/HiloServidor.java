@@ -32,6 +32,7 @@ public class HiloServidor extends Thread {
 	private ObjectInputStream in;
 	String txtNombre;
 	String txtContra;
+	String municipioCentro;
 	Session ses = HibernateUtil.getSessionFactory().openSession();
 	Transaction tr;
 	static String url = "Centros-Lat-Lon.json";
@@ -180,11 +181,11 @@ public class HiloServidor extends Thread {
 			String estado = actual.getEstado();
 			String titulo = actual.getTitulo();
 			Timestamp fecha = actual.getFecha();
-			
+			String centro = getNombreCentro(actual.getIdCentro());
 			int dia=horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
 			int hora=horaReunion(fecha.toLocalDateTime().getHour());	
 			
-			modelo.setValueAt(estado + " - " +titulo, hora, dia);
+			modelo.setValueAt(estado + " - " +titulo + " | Centro: "+centro +" - "+this.municipioCentro, hora, dia);
 		}
 		try {
 			out.writeObject(modelo);
@@ -214,6 +215,7 @@ public class HiloServidor extends Thread {
 	private String getNombreCentro(String idcen) {
 		for (int i = 0; i < lista.size(); i++) {
 			if (lista.get(i).getIdCentro().equals(idcen)) {
+				this.municipioCentro=lista.get(i).getMunicipio();
 				return lista.get(i).getNombre();
 			}
 		}

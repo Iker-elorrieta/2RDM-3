@@ -64,11 +64,11 @@ public class verReuniones extends JPanel {
 		tablaReuniones.setAutoCreateRowSorter(true);
 		tablaReuniones.setColumnSelectionAllowed(false);
 		tablaReuniones.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		tablaReuniones.getColumnModel().getColumn(0).setPreferredWidth(200);
-		tablaReuniones.getColumnModel().getColumn(1).setPreferredWidth(200);
-		tablaReuniones.getColumnModel().getColumn(2).setPreferredWidth(200);
-		tablaReuniones.getColumnModel().getColumn(3).setPreferredWidth(200);
-		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(200);
+		tablaReuniones.getColumnModel().getColumn(0).setPreferredWidth(430);
+		tablaReuniones.getColumnModel().getColumn(1).setPreferredWidth(430);
+		tablaReuniones.getColumnModel().getColumn(2).setPreferredWidth(430);
+		tablaReuniones.getColumnModel().getColumn(3).setPreferredWidth(430);
+		tablaReuniones.getColumnModel().getColumn(4).setPreferredWidth(430);
 		scrollReuniones.setViewportView(tablaReuniones);
 
 		scrollPendientes = new JScrollPane();

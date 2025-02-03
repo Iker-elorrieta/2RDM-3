@@ -3,7 +3,7 @@ package Modelo;
 public class Centro {
 	String idCentro;
 	String nombre;
-	String direccion;
+	String municipio;
 	
 	public Centro() {
 		
@@ -12,7 +12,7 @@ public class Centro {
 	public Centro(String id, String nombre2, String dir) {
 		idCentro=id;
 		nombre=nombre2;
-		direccion=dir;
+		municipio=dir;
 	}
 
 	public String getIdCentro() {
@@ -31,11 +31,11 @@ public class Centro {
 		this.nombre = nombre;
 	}
 
-	public String getDireccion() {
-		return direccion;
+	public String getMunicipio() {
+		return municipio;
 	}
 
-	public void setDireccion(String direccion) {
-		this.direccion = direccion;
+	public void setMunicipio(String direccion) {
+		this.municipio = direccion;
 	}
 }

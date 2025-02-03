@@ -35,6 +35,14 @@ public class verOtrosHorarios extends JPanel {
 		tabla.setRowSelectionAllowed(false);
 		tabla.setAutoCreateRowSorter(true);
 		tabla.setColumnSelectionAllowed(false);
+		tabla.setAutoCreateColumnsFromModel(false);
+		tabla.setEnabled(false);
+		tabla.getColumnModel().getColumn(0).setPreferredWidth(300);
+		tabla.getColumnModel().getColumn(1).setPreferredWidth(300);
+		tabla.getColumnModel().getColumn(2).setPreferredWidth(300);
+		tabla.getColumnModel().getColumn(3).setPreferredWidth(300);
+		tabla.getColumnModel().getColumn(4).setPreferredWidth(300);
+		tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollPane.setViewportView(tabla);
 		
 		btnAtras = new JButton("Volver");

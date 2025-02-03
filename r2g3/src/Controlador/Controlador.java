@@ -208,7 +208,7 @@ public class Controlador implements ActionListener {
 				} else if (ent.getKey().equals("NOM")) {
 					get = true;
 					dato = 2;
-				} else if (ent.getKey().equals("DOMI")) {
+				} else if (ent.getKey().equals("DTERRE")) {
 					get = true;
 					dato = 3;
 				}
