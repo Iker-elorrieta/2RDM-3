@@ -11,7 +11,6 @@ public class Servidor {
 			ServerSocket serv = new ServerSocket(4000);
 			while (!serv.isClosed()) {
 				Socket cli = serv.accept();
-				// hilo
 				new HiloServidor(cli).start();
 			}
 			serv.close();
@@ -19,5 +18,4 @@ public class Servidor {
 			e.printStackTrace();
 		}
 	}
-
 }

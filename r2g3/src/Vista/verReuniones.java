@@ -56,8 +56,6 @@ public class verReuniones extends JPanel {
 		tablaReuniones.getColumnModel().getColumn(2).setCellRenderer(new CellRenderer());
 		tablaReuniones.getColumnModel().getColumn(3).setCellRenderer(new CellRenderer());
 		tablaReuniones.getColumnModel().getColumn(4).setCellRenderer(new CellRenderer());
-		
-		
 		tablaReuniones.setEnabled(false);
 		tablaReuniones.setAutoCreateColumnsFromModel(false);
 		tablaReuniones.setRowSelectionAllowed(false);
@@ -134,10 +132,10 @@ public class verReuniones extends JPanel {
 
 	public class CellRenderer extends DefaultTableCellRenderer {
 		private static final long serialVersionUID = 1L;
-
+		
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int col) {
-			JLabel l = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+			JLabel l= (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
 			if (l.getText().toString().contains("aceptada")) {
 				l.setBackground(Color.GREEN);

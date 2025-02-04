@@ -128,7 +128,7 @@ public class Controlador implements ActionListener {
 
 		DefaultTableModel modelo = metodos.getReuniones();
 		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
-
+		
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
 
@@ -226,9 +226,10 @@ public class Controlador implements ActionListener {
 					get = false;
 				}
 			} else if (primi.isNumber()) {
-				if (dato == 1) {
+				if (get&&dato == 1) {
 					id = String.valueOf(primi.getAsNumber());
 				}
+				get=false;
 			} else if (primi.isBoolean()) {
 			}
 		} else if (datos.isJsonNull()) {
