@@ -48,7 +48,6 @@ public class ButtonEditor implements TableCellRenderer, TableCellEditor {
 		} else {
 			button.setActionCommand(Ventanas.enumAcciones.RECHAZAR_REUNION.toString());
 		}
-
 		button.addActionListener(listener);
 		panel.add(button);
 		panel.setBackground(table.getGridColor());
