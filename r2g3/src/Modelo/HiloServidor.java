@@ -105,7 +105,6 @@ public class HiloServidor extends Thread {
 				default:
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
