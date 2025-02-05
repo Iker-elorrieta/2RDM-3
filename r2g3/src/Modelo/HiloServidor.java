@@ -40,7 +40,6 @@ public class HiloServidor extends Thread {
 
 	public HiloServidor(Socket cliente) {
 		cli = cliente;
-
 	}
 
 	@SuppressWarnings({ "deprecation" })
@@ -79,7 +78,8 @@ public class HiloServidor extends Thread {
 					verOtroHorario(nomprof);
 					break;
 				case 21:// llenar combo profes
-					llenarCombo();
+					String nombre = in.readUTF();
+					llenarCombo(nombre);
 					break;
 				case 3: // ver reuniones
 					Users id = (Users) in.readObject();
@@ -104,7 +104,6 @@ public class HiloServidor extends Thread {
 				default:
 				}
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -121,10 +120,12 @@ public class HiloServidor extends Thread {
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
+			if(!comprobarConflicto(actual)) {
 			actual.setEstado("denegada");
 			ses.update(actual);
 			tr.commit();
 			tr = ses.beginTransaction();
+			}
 		}
 	}
 
@@ -135,11 +136,29 @@ public class HiloServidor extends Thread {
 		List<?> reuniones = q.list();
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
+			if(!comprobarConflicto(actual)) {
+				System.out.println("hace bien metodo");
 			actual.setEstado("aceptada");
 			ses.update(actual);
 			tr.commit();
 			tr = ses.beginTransaction();
+			}
 		}
+	}
+
+	private boolean comprobarConflicto(Reuniones actual) {
+		String qry2 = "from Reuniones where estado='aceptada' or estado='denegada' and fecha='" + actual.getFecha()
+				+ "'";
+		Query q2 = ses.createQuery(qry2);
+		List<?> comprobar = q2.list();
+		if (comprobar.size() > 0) {
+			actual.setEstado("conflicto");
+			ses.update(actual);
+			tr.commit();
+			tr = ses.beginTransaction();
+			return true;
+		}
+		return false;
 	}
 
 	private void verPendientes(int id) {
@@ -158,7 +177,7 @@ public class HiloServidor extends Thread {
 			String aula = actual.getAula();
 			String centro = getNombreCentro(actual.getIdCentro());
 			String alumno = actual.getUsersByAlumnoId().getNombre() + " " + actual.getUsersByAlumnoId().getApellidos();
-	
+
 			modelo.addRow(new Object[] { estado, titulo, asunto, String.valueOf(fecha), aula, centro, alumno,
 					new JButton("Aceptar"), new JButton("Rechazar") });
 		}
@@ -174,7 +193,7 @@ public class HiloServidor extends Thread {
 		String qry = "from Reuniones where profesor_id=" + id + " and estado!='pendiente' and estado!='conflicto'";
 		Query q = ses.createQuery(qry);
 		List<?> reuniones = q.list();
-		String columnas[] = {"Lunes","Martes","Miércoles","Jueves","Viernes"};
+		String columnas[] = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" };
 		DefaultTableModel modelo = new DefaultTableModel(columnas, 5);
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones actual = (Reuniones) reuniones.get(i);
@@ -182,10 +201,11 @@ public class HiloServidor extends Thread {
 			String titulo = actual.getTitulo();
 			Timestamp fecha = actual.getFecha();
 			String centro = getNombreCentro(actual.getIdCentro());
-			int dia=horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
-			int hora=horaReunion(fecha.toLocalDateTime().getHour());	
-			
-			modelo.setValueAt(estado + " - " +titulo + " | Centro: "+centro +" - "+this.municipioCentro, hora, dia);
+			int dia = horarioDia(fecha.toLocalDateTime().getDayOfWeek().toString());
+			int hora = horaReunion(fecha.toLocalDateTime().getHour());
+
+			modelo.setValueAt(estado + " - " + titulo + " | Centro: " + centro + " - " + this.municipioCentro, hora,
+					dia);
 		}
 		try {
 			out.writeObject(modelo);
@@ -196,7 +216,7 @@ public class HiloServidor extends Thread {
 	}
 
 	private int horaReunion(int hour) {
-		switch(hour) {
+		switch (hour) {
 		case 8:
 			return 0;
 		case 9:
@@ -215,15 +235,15 @@ public class HiloServidor extends Thread {
 	private String getNombreCentro(String idcen) {
 		for (int i = 0; i < lista.size(); i++) {
 			if (lista.get(i).getIdCentro().equals(idcen)) {
-				this.municipioCentro=lista.get(i).getMunicipio();
+				this.municipioCentro = lista.get(i).getMunicipio();
 				return lista.get(i).getNombre();
 			}
 		}
 		return null;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void llenarCombo() throws IOException {
+	private void llenarCombo(String nombre) throws IOException {
+		Users indice = null;
 		String qry = "from Users where tipo_id=3";
 		Query q = ses.createQuery(qry);
 		List<?> profesores = q.list();
@@ -232,8 +252,12 @@ public class HiloServidor extends Thread {
 		for (int i = 0; i < profesores.size(); i++) {
 			Users actual = (Users) profesores.get(i);
 			listaprofes.add(actual.getNombre() + " " + actual.getApellidos());
+			if (actual.getNombre().equals(nombre)) {
+				indice = actual;
+			}
 		}
-		modelo = new DefaultComboBoxModel(listaprofes.toArray());
+		modelo = new DefaultComboBoxModel<>(listaprofes.toArray());
+		modelo.setSelectedItem(indice.getNombre() + " " + indice.getApellidos());
 		out.writeObject(modelo);
 		out.flush();
 	}
@@ -243,7 +267,7 @@ public class HiloServidor extends Thread {
 		String profeq = "from Users where nombre='" + nom + "'";
 		Query q1 = ses.createQuery(profeq);
 		List<?> profenom = q1.list();
-		Users profeSelec = (Users) profenom.get(0);
+		Users profeSelec = (Users) profenom.getFirst();
 		String qry = "from Horarios where profe_id=" + profeSelec.getId();
 		Query q = ses.createQuery(qry);
 		List<?> horario = q.list();
@@ -291,7 +315,7 @@ public class HiloServidor extends Thread {
 		String qry = "from Modulos where id=" + moduloId;
 		Query q = ses.createQuery(qry);
 		List<?> modulo = q.list();
-		Modulos temp = (Modulos) modulo.get(0);
+		Modulos temp = (Modulos) modulo.getFirst();
 		return temp.getNombre();
 	}
 
@@ -335,17 +359,17 @@ public class HiloServidor extends Thread {
 							out.writeBoolean(true);
 							out.writeObject(temp);
 							out.flush();
-							// guardado();
 							return true;
 						}
-						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");
+						JOptionPane.showMessageDialog(null, "Contraseña incorrecta.", "Error",
+								JOptionPane.ERROR_MESSAGE);
 					}
 					out.writeBoolean(false);
 					out.flush();
 					return false;
 				}
 			}
-			JOptionPane.showMessageDialog(null, "Usuario incorrecto.");
+			JOptionPane.showMessageDialog(null, "Usuario incorrecto.", "Error", JOptionPane.ERROR_MESSAGE);
 			out.writeBoolean(false);
 			out.flush();
 			return false;
@@ -355,20 +379,6 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@SuppressWarnings("unused")
-	private void guardado() {
-		try {
-			tr = ses.beginTransaction();
-			Ciclos nuevo = new Ciclos();
-			nuevo.setId(6);
-			nuevo.setNombre("CICLO");
-			ses.save(nuevo);
-			tr.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public String Resumir(String frase) throws NoSuchAlgorithmException {

@@ -59,7 +59,7 @@ public class Controlador implements ActionListener {
 		// panel otros horarios
 		this.vista.getPanelOtrosHorarios().getBtnAtras().addActionListener(this);
 		this.vista.getPanelOtrosHorarios().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
-
+		
 		this.vista.getPanelOtrosHorarios().getComboProfes().addActionListener(this);
 		this.vista.getPanelOtrosHorarios().getComboProfes()
 				.setActionCommand(Ventanas.enumAcciones.SELECCIONAR_PROFE.toString());
@@ -128,7 +128,7 @@ public class Controlador implements ActionListener {
 
 		DefaultTableModel modelo = metodos.getReuniones();
 		vista.getPanelReuniones().getTablaReuniones().setModel(modelo);
-
+		
 		DefaultTableModel pendientes = metodos.getPendientes();
 		vista.getPanelReuniones().getTablaPendientes().setModel(pendientes);
 
@@ -146,7 +146,6 @@ public class Controlador implements ActionListener {
 	private void llenarComboProfes() {
 		DefaultComboBoxModel<?> modelo = metodos.llenarComboProfes();
 		vista.getPanelOtrosHorarios().getComboProfes().setModel((ComboBoxModel<String>) modelo);
-		vista.getPanelOtrosHorarios().getComboProfes().setSelectedIndex(1);
 		mostrarHorario();
 	}
 
@@ -227,9 +226,10 @@ public class Controlador implements ActionListener {
 					get = false;
 				}
 			} else if (primi.isNumber()) {
-				if (dato == 1) {
+				if (get&&dato == 1) {
 					id = String.valueOf(primi.getAsNumber());
 				}
+				get=false;
 			} else if (primi.isBoolean()) {
 			}
 		} else if (datos.isJsonNull()) {
