@@ -59,7 +59,7 @@ public class Controlador implements ActionListener {
 		// panel otros horarios
 		this.vista.getPanelOtrosHorarios().getBtnAtras().addActionListener(this);
 		this.vista.getPanelOtrosHorarios().getBtnAtras().setActionCommand(Ventanas.enumAcciones.CARGAR_MENU.toString());
-
+		
 		this.vista.getPanelOtrosHorarios().getComboProfes().addActionListener(this);
 		this.vista.getPanelOtrosHorarios().getComboProfes()
 				.setActionCommand(Ventanas.enumAcciones.SELECCIONAR_PROFE.toString());

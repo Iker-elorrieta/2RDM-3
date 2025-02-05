@@ -40,7 +40,6 @@ public class HiloServidor extends Thread {
 
 	public HiloServidor(Socket cliente) {
 		cli = cliente;
-
 	}
 
 	@SuppressWarnings({ "deprecation" })
